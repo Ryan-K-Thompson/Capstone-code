@@ -174,6 +174,32 @@ def radical_oxygen_mass_fraction_PWKnozzleflow(gas, enthalpy_addition, compositi
     print(mass_fractions)
     return mass_fractions
 
+def SDToolbox_postshock_velocity(gas1, gas2, u1):
+    """
+    SDToolbox lacks a function to determine post shock velocity. This fills the 
+    gap without interacting witht the functional elements of the SDToolbox 
+    algorithms
+    
+    Parameters
+    ----------
+    gas1 : TYPE
+        DESCRIPTION.
+    gas2 : TYPE
+        DESCRIPTION.
+    u1 : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    u2 : TYPE
+        DESCRIPTION.
+
+    """
+    density1 = gas1.density_mass
+    density2 = gas2.density_mass
+    u2 = density1*u1/density2
+    return u2
+
 radical_oxygen_mass_fraction_PWKnozzleflow(gas = gas, enthalpy_addition = 16*10**6, composition = "CO2:1", P1 = 90*1000) 
   
     
