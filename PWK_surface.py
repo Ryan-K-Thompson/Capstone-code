@@ -31,10 +31,11 @@ mechanism = "airNASA9noions.cti"
 # CALCULATION
 massflow = massflow_inp/1000    # kg/s
 gas = ct.ThermoPhase(mechanism)
-h_formation = gas.h
 
 gas.TPY = T1, P1_0, gas_mass_fractions
 cp_gas1 = gas.cp_mass
+h_initial = gas.h
+gas()
 
 # 2. arc chamber conditions
 #     input from pressure chamber conditions
@@ -60,14 +61,18 @@ cp_gas1 = gas.cp_mass
 #         gas()
 
 # USER INPUT
-efficiency = 0.6
-power_in_inp = 100  # kW
+efficiency = 0.5
+power_in_inp = 18  # kW
 
 # CALCULATIONS
 power_in = power_in_inp*1000    # W
 h0 = efficiency*power_in/massflow
 # print('stagnation h (MJ/kg)= '+str(h0/(10**6)))
-gas.HP = h0 - h_formation, P1_0
+gas.HP = h0 + h_initial, P1_0
+gas.equilibrate("HP")
+gas()
+
+gas.HP = gas.h,10000
 gas.equilibrate("SP")
 gas()
 
