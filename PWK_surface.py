@@ -8,29 +8,23 @@ import cantera as ct
 import numpy as np
 import matplotlib
 from matplotlib import pyplot as plt
+import sympy 
+from sympy import symbols, solve
+import scipy
+from scipy.optimize import fsolve
+import mpmath as mp
+from mpmath import findroot
 
-
-
-
-def PWK(P1_0, power_in_inp, massflow_inp):
-    # CODE PLAN
-    # 1. pressure chamber conditions
-    #     user inputs    
-    #         pressure (stagnation pressure)
-    #         temperature
-    #         Test gas mass flow rate through the mass flow control valve
-        
-    #     calculate
-    #         gas specific heat capacity at P, T (cantera)
-        
-    #     output
-    #         Test gas mass flow rate
-    #         C_p test gas
-    
+def function():
     # USER INPUT
-    # P1_0 = 20000  # Pa
+    P1_0 = 20000  # Pa
+    P1_P4 = 1.1
+    P4 = P1_0/P1_P4
+
+    
+    
     T1 = 300    # K
-    # massflow_inp =  5   # g/s
+    massflow_inp =  5   # g/s
     gas_mass_fractions = "CO2:1"
     mechanism = "airNASA9noions.cti"
     
@@ -43,39 +37,13 @@ def PWK(P1_0, power_in_inp, massflow_inp):
     h_initial = gas.h
     gas()
     
-    # 2. arc chamber conditions
-    #     input from pressure chamber conditions
-    #         gas specific heat capacity
-    #         mass flow rate through the mass flow control valve
-        
-    #     user inputs
-    #         arc power (VxI) max = 250 kW
-    #
-    #         get the following from a convection/conduction heating calculation 
-    #         alternatively assume a thermal efficiency !!! do this initially to get script running
-    #         C_p of water   
-    #             temperature difference between inlet and outlet temperature of the cooling water in ARC CHAMBER
-    #             temperature difference between inlet and outlet temperature of the cooling water in NOZZLE AND MIXING CHAMBER
-    #             mass flow of cooling water ARC CHAMBER
-    #             mass flow of cooling water NOZZLE AND MIXING CHAMBER
-        
-    #     calculate 
-    #         test gas specific stagnation enthalpy at nozzle exit 
-        
-    #     output
-    #         test gas specific stagnation enthalpy
-    #         gas()
-    
-    # USER INPUT
+
     efficiency = 0.5
-    # power_in_inp = 18  # kW
+    power_in_inp = 180  # kW
     r_chamber = 0.025   # m, arc chamber radius
     A_chamber = np.pi*(r_chamber**2)    # m2, area of arc chamber
-    A_ratio = 4
+    
     R_model = 0.05
-    
-    
-    # CALCULATIONS
     
     A_exit = A_chamber*4
     R_jet = (A_exit/np.pi)**0.5
@@ -89,54 +57,85 @@ def PWK(P1_0, power_in_inp, massflow_inp):
     h0 = efficiency*power_in/massflow
     print('stagnation h (MJ/kg)= '+str(h0/(10**6)))
     gas.HP = h0 + h_initial, P1_0
-    # gas.equilibrate("HP")
-    # gas()
     
-    # gas.HP = gas.h,10000
     gas.equilibrate("SP")
-    gas()
-    rho2 = gas.density_mass
     
-    U2 = (rho1/rho2)*U1*(1/A_ratio)
-    print(U2)
     
-    print('density'+str(rho2))
+    gamma = gas.cp_mass/gas.cv_mass
+    print("gamma "+str(gamma))
     
-    # 3. settling chamber
-    #     Assumption
-    #         ignore in model
-        
-    # 4. nozzle 
-    #     Assumption
-    #         adiabatic !!!! this is a bad assumption, heat transfer is occuring the nozzle
-        
-    #     input 
-    #         gas()
+    
+    
+    Me = ((P1_P4**((gamma-1)/gamma)-1)/((gamma-1)/2))**0.5
+    print("M = " +str(Me))
+    Ue = Me*(gamma*gas.T*8.314)**0.5
+    print('Ue = ' +str(Ue))
+    Pe = P1_0 - 0.5*gas.density_mass*Ue**2
+    print("Pe = "+str(Pe))
+    Te = gas.T
+    print("Te = "+str(Te))
+    
     L = R_model/R_jet
     
-    beta = (U2/R_model)*(1/(2-L-1.68*(L-1)**2-1.28*(L-1)**3))
-    
-    P_free = P1_0 - 0.5*rho2*U2**2
-    print(P1_0/P_free)
+    beta = (Ue/R_model)*(1/(2-L-1.68*(L-1)**2-1.28*(L-1)**3))
+    print("beta = "+str(beta))
 
-    return P1_0, h0, beta
+# return P1_0, h0, beta, U2, Temp, Pres
+
  
 
-P1_0 = range(20000,80000,5000)
-massflow = 50
-power = range(50,250,25)
+# P1_0 = range(20000,80000,5000)
+# massflow = 25
+# power = range(50,250,25)
 
-P0 = np.zeros([len(P1_0), len(power)])
-H0 = np.zeros([len(P1_0), len(power)])
-beta = np.zeros([len(P1_0), len(power)])
+# P0 = np.zeros([len(P1_0), len(power)])
+# H0 = np.zeros([len(P1_0), len(power)])
+# beta = np.zeros([len(P1_0), len(power)])
+# T_ = np.zeros([len(P1_0), len(power)])
+# P_ = np.zeros([len(P1_0), len(power)])
+# U2_ = np.zeros([len(P1_0), len(power)])
 
-for count, P in enumerate(P1_0):
-    for count2, p in enumerate(power):
-        P0[count][count2], H0[count][count2], beta[count][count2] = PWK(P,p,massflow)
+# for count, P in enumerate(P1_0):
+#     for count2, p in enumerate(power):
+#         print(2)
+#         P0[count][count2], H0[count][count2], beta[count][count2], U2_[count][count2], T_[count][count2], P_[count][count2] = PWK(P,p,massflow)
 
-fig = plt.figure(figsize =(14, 9))
-ax = plt.axes(projection ='3d')
-ax.plot_surface(P0,H0/(10**6),beta)
-plt.xlabel("P0")
-plt.ylabel("H0")
-plt.zlabel("beta")
+
+
+# plt.figure()
+# fig2 = plt.contourf(P0/1000,H0/10**6,beta)
+# plt.xlabel("P_0 (kPa)")
+# plt.ylabel("H_0 (MJ)")
+# plt.colorbar()
+# plt.title("beta")
+
+# plt.figure()
+# fig2 = plt.contourf(P0/1000,H0/10**6,U2_)
+# plt.xlabel("P_0 (kPa)")
+# plt.ylabel("H_0 (MJ)")
+# plt.colorbar()
+# plt.title("U2")
+
+# plt.figure()
+# fig2 = plt.contourf(P0/1000,H0/10**6,T_)
+# plt.xlabel("P_0 (kPa)")
+# plt.ylabel("H_0 (MJ)")
+# plt.colorbar()
+# plt.title("T")
+
+# plt.figure()
+# fig2 = plt.contourf(P0/1000,H0/10**6,P_)
+# plt.xlabel("P_0 (kPa)")
+# plt.ylabel("H_0 (MJ)")
+# plt.colorbar()
+# plt.title("Ps")
+
+# plt.figure()
+# fig = plt.figure(figsize =(7,7))
+# ax = plt.axes(projection ='3d')
+# ax.plot_surface(P0/1000,H0/(10**6),beta)
+# plt.xlabel("P_0 (kPa)")
+# plt.ylabel("H_0 (MJ)")
+# plt.title("Plasma wind tunnel operational surface")
+# ax.set_zlabel("Beta (1/s)")
+# # plt.zlabel("beta")
