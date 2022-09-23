@@ -15,101 +15,60 @@ from scipy.optimize import fsolve, root
 
 
 def plenum_to_nozzle_inlet(H_add, P0):
-        
-    # print('imported')
-    
-    # Pratio = 1.9
-    # Aout_Athroat = 1.2
-    
-    # pressure chamber
-    # U = 200 #m/s
-    # P0 = 90*1000 #Pa
-    # Ptest = P0/Pratio
-    # print(Ptest)
-    T0 = 300 # K
-    
-    gas = ct.ThermoPhase('airNASA9noions.cti')
-    
-    gas.TPX =T0, P0, "CO2:1"
-    H0 = gas.enthalpy_mass
-    # print("H0=" +str(H0))
-    
-    #mixing chamber
-    # gas()
-    gas.HP = H0 + H_add, P0
-    gas.equilibrate('HP')
-    # print("temp_mix = "+str(gas0.T))
-    
-    
-    # gamma = gas.cp_mass/gas.cv_mass
-    # gasconstant = 8.3144598 
-    # R = gasconstant/gas0.mean_molecular_weight*1000
-    # a = (gamma*R*gas0.T)**0.5
-    # # print("gamma = "+str(gamma))
-    
+    # Plenum
+    T0 = 300 # Plenum temperature, K
+    gas = ct.ThermoPhase('airNASA9noions.cti') # Define the species properties
+    gas.TPX = T0, P0, "CO2:1" # set the plenum temperature, pressure, and species
+    h_plenum = gas.enthalpy_mass # determine the initial enthalpy of the gas
+
+    # Mixing chamber
+    h_mixing = h_plenum + H_add # add the enthalpy from the arc to the gas
+    gas.HP = h_mixing, P0 # set the gas enthalpy and pressure in the mixing chamber
+    gas.equilibrate('HP') # equilibrate the gas under constant enthalpy and pressure
+
     return gas
 
-
-
 def soundspeed(gas):
-    """The speed of sound. Assumes an ideal gas."""
-
     gamma = gas.cp / gas.cv
     return math.sqrt(gamma * ct.gas_constant
                      * gas.T / gas.mean_molecular_weight)
 
-
-def isentropic(gas):
-    """
-    In this example, the area ratio vs. Mach number curve is computed. 
-    """
-    
+def isentropic(gas, mdot):
     # get the stagnation state parameters
     s0 = gas.s
     h0 = gas.h
     p0 = gas.P
 
-    mdot = 0.5  # arbitrary
-    #arearatio = 1.2
     amin = 1.e14
+    data = np.zeros((200, 9))
 
-    data = np.zeros((200, 10))
-    
-    gas()
     # compute values for a range of pressure ratios
     for r in range(200):
-
         p = p0*(r+1)/201.0
-        # set the state using (p,s0)
-        gas.SP = s0, p
+        gas.SP = s0, p # reset the gas entropy and pressure
 
         v = (2.0*(h0 - gas.h))**0.5      # h + V^2/2 = h0
-        arearatio = mdot/(gas.density*v)    # rho*v*(A/A*) = constant
-        A_throat_choked = mdot/(soundspeed(gas)*gas.density)
+        area = mdot/(gas.density*v)    # rho*v*(A/A*) = constant
+ 
+        amin = min(amin, area) # determine the throat area
+        data[r, :] = [area, v/soundspeed(gas), gas.T, p/p0, gas.density_mass, gas.P, v, mdot, area]
 
-        amin = min(amin, arearatio)
-        data[r, :] = [arearatio, v/soundspeed(gas), gas.T, p/p0, gas.density_mass, gas.P, v, mdot, A_throat_choked, arearatio]
-
-        gamma = gas.cp_mass/gas.cv_mass
-        print(gamma)
-        print(gas.T)
         
-    data[:, 0] /= amin
-    # for r in range(200):
-    #     actual_area = arearatio*A_throat_choked
-        # data[r, 9] = actual_area
-    return data
+    data[:, 0] /= amin # divide the area by the throat area to determine the area ratio
+
+    return data, amin
 
 
 if __name__ == "__main__":
     print(__doc__)
-    
-    H_add = 2*10**6
-    P0 = 90*10**3
-   
+    mdot = 0.05
+    P_arc = 240*10**3
+    H_add = 0.5*P_arc/mdot
+    P0 = 9*10**3
     
     gas = plenum_to_nozzle_inlet(H_add, P0)
-    data = isentropic(gas)
+    data, amin = isentropic(gas, mdot)
+    print("H_add = " +str(H_add))
     try:
         import matplotlib.pyplot as plt
         fig1 = plt.figure("Figure 1")
