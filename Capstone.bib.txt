@@ -1,0 +1,683 @@
+﻿@article{RN483,
+   author = {Al-Jothery, H. K. M. and Albarody, T. M. B. and Yusoff, P. S. M. and Abdullah, M. A. and Hussein, A. R.},
+   title = {A review of ultra-high temperature materials for thermal protection system},
+   journal = {IOP Conference Series: Materials Science and Engineering},
+   volume = {863},
+   number = {1},
+   pages = {012003},
+   ISSN = {1757-8981
+1757-899X},
+   DOI = {10.1088/1757-899x/863/1/012003},
+   url = {http://dx.doi.org/10.1088/1757-899X/863/1/012003},
+   year = {2020},
+   type = {Journal Article}
+}
+
+@techreport{RN477,
+   author = {AMES Research Staff},
+   title = {Equations, Tables, and Charts for Compressible flow},
+   institution = {NACA},
+   number = {1135},
+   year = {1953},
+   type = {Report}
+}
+
+@book{RN445,
+   author = {Anderson, John D.},
+   title = {Fundamentals of aerodynamics},
+   publisher = {McGraw Hill Education},
+   address = {New York, New York},
+   edition = {Sixth edition.},
+   series = {McGraw-Hill series in aeronautical and aerospace engineering},
+   ISBN = {9781259681486},
+   year = {2017},
+   type = {Book}
+}
+
+@misc{RN453,
+   volume = {E341 − 08},
+   year = {2020},
+   type = {Standard}
+}
+
+@article{RN465,
+   author = {Auweter-Kurtz, Monika and Kurtz, Helmut L. and Laure, Stefan},
+   title = {Plasma generators for re-entry simulation},
+   journal = {Journal of propulsion and power},
+   volume = {12},
+   number = {6},
+   pages = {1053-1061},
+   ISSN = {0748-4658},
+   DOI = {10.2514/3.24143},
+   year = {1996},
+   type = {Journal Article}
+}
+
+@article{RN472,
+   author = {Barbante, P. F. and Chazot, O.},
+   title = {Flight Extrapolation of Plasma Wind Tunnel Stagnation Region Flowfield},
+   journal = {Journal of Thermophysics and Heat Transfer},
+   volume = {20},
+   number = {3},
+   pages = {493-499},
+   DOI = {10.2514/1.17185},
+   url = {https://doi.org/10.2514/1.17185},
+   year = {2006},
+   type = {Journal Article}
+}
+
+@book{RN485,
+   author = {Bertin, J, J},
+   title = {Hypersonic Aerothermodynamics},
+   publisher = {AIAA},
+   address = {Washington},
+   series = {AIAA Education Series},
+   year = {1994},
+   type = {Book}
+}
+
+@book{RN503,
+   author = {Bird, R. Byron},
+   title = {Transport phenomena},
+   publisher = {Wiley},
+   address = {New York, N.Y},
+   ISBN = {047107392X},
+   year = {1960},
+   type = {Book}
+}
+
+@article{RN491,
+   author = {Bottin, Benoit and Degrez, Gérard and Carbonaro, Mario and Zemsch, Stefan},
+   title = {Aerothermodynamic Design of an Inductively Coupled Plasma Wind Tunnel},
+   DOI = {10.2514/6.1997-2498},
+   year = {1997},
+   type = {Journal Article}
+}
+
+@misc{RN486,
+   volume = {2022},
+   number = {02/06/2022},
+   url = {https://cantera.org/documentation/index.html},
+   year = {2022},
+   type = {Web Page}
+}
+
+@article{RN488,
+   author = {Chinnaraj, Rajesh Kumar and Hong, Seong Min and Kim, Ho Seok and Oh, Phil Yong and Choi, Seong Man},
+   title = {Ablation Experiments of Ultra-High-Temperature Ceramic Coating on Carbon–Carbon Composite Using ICP Plasma Wind Tunnel},
+   journal = {International journal of aeronautical and space sciences},
+   volume = {21},
+   number = {4},
+   pages = {889-905},
+   ISSN = {2093-274X},
+   DOI = {10.1007/s42405-020-00267-6},
+   year = {2020},
+   type = {Journal Article}
+}
+
+@article{RN457,
+   author = {Choi, Daesan and Baek, Jin Sol and Kim, Kyu-Hong},
+   title = {Efficient diffuser design for plasma wind tunnels with a large blockage model},
+   journal = {Aerospace Science and Technology},
+   volume = {119},
+   pages = {107206},
+   ISSN = {1270-9638},
+   DOI = {https://doi.org/10.1016/j.ast.2021.107206},
+   url = {https://www.sciencedirect.com/science/article/pii/S1270963821007161},
+   year = {2021},
+   type = {Journal Article}
+}
+
+@techreport{RN450,
+   author = {Fertig, Markus},
+   title = {Report and Library on Gas Phase Chemistry},
+   institution = {SACOMAR},
+   year = {2012},
+   type = {Report}
+}
+
+@article{RN411,
+   author = {García-Garrido, Javier and Pudsey, Adrian S. and Mundt, Christian},
+   title = {Numerical simulations of radiative heat effects in a plasma wind-tunnel flow under Mars entry conditions},
+   journal = {Acta astronautica},
+   volume = {151},
+   pages = {334-341},
+   ISSN = {0094-5765},
+   DOI = {10.1016/j.actaastro.2018.06.011},
+   year = {2018},
+   type = {Journal Article}
+}
+
+@article{RN498,
+   author = {Gnoffo, Peter A. and Weilmuenster, K. James and Braun, Robert D. and Cruz, Christopher I.},
+   title = {Influence of sonic-line location on Mars Pathfinder Probe aerothermodynamics},
+   journal = {Journal of Spacecraft and Rockets},
+   volume = {33},
+   number = {2},
+   pages = {169-177},
+   ISSN = {0022-4650},
+   DOI = {10.2514/3.26737},
+   url = {https://doi.org/10.2514/3.26737},
+   year = {1996},
+   type = {Journal Article}
+}
+
+@inproceedings{RN499,
+   author = {Gülhan, Ali and Thiele, Thomas and Siebe, Frank and Kronen, Rolf and Schleutker, Thorn},
+   title = {Aerothermal Loads Measured During Martian Entry of the ExoMars Schiaparelli Lander},
+   type = {Conference Proceedings}
+}
+
+@phdthesis{RN493,
+   author = {Hatzl, Stefan},
+   title = {Entwicklung eines 1D Raman-Spektroskopie Verfahrens zur Charakterisierung der Temperatur reagierender Überschallfreistrahlen hoher Enthalpie},
+   university = {Universität der Bundeswehr München},
+   url = {https://nbn-resolving.org/urn:nbn:de:bvb:706-5228},
+   year = {2017},
+   type = {Thesis}
+}
+
+@article{RN487,
+   author = {Helber, Bernd and Asma, Cem O. and Babou, Yacine and Hubin, Annick and Chazot, Olivier and Magin, Thierry E.},
+   title = {Material response characterization of a low-density carbon composite ablator in high-enthalpy plasma flows},
+   journal = {Journal of materials science},
+   volume = {49},
+   number = {13},
+   pages = {4530-4543},
+   ISSN = {0022-2461},
+   DOI = {10.1007/s10853-014-8153-z},
+   year = {2014},
+   type = {Journal Article}
+}
+
+@article{RN461,
+   author = {Herdrich, G. and Auweter-Kurtz, M. and Endlich, P. and Kurtz, H.},
+   title = {Mars Entry Simulation Using an Inductively Heated Plasma Generator},
+   journal = {Journal of spacecraft and rockets},
+   volume = {40},
+   number = {5},
+   pages = {690-693},
+   ISSN = {0022-4650},
+   DOI = {10.2514/2.6894},
+   year = {2003},
+   type = {Journal Article}
+}
+
+@misc{RN444,
+   DOI= {10.2514/6.2004-2596},
+   url = {https://arc.aiaa.org/doi/abs/10.2514/6.2004-2596},
+   year = {2004},
+   type = {Conference Paper}
+}
+
+@article{RN462,
+   author = {Herdrich, Georg and Marynowski, Thomas},
+   title = {Mars and Venus Entry Simulation Capabilities of IRS Plasma Wind Tunnel PWK3},
+   journal = {Applied physics research},
+   volume = {4},
+   number = {1},
+   pages = {146-146},
+   ISSN = {1916-9639},
+   DOI = {10.5539/apr.v4n1p146},
+   year = {2012},
+   type = {Journal Article}
+}
+
+@book{RN416,
+   author = {Hirschel, E. H.},
+   title = {Basics of Aerothermodynamics},
+   publisher = {Springer-Verlag},
+   address = {Berlin, Heidelberg},
+   edition = {1. Aufl.},
+   series = {Progress in astronautics and aeronautics},
+   ISBN = {3540221328},
+   DOI = {10.1007/b137734},
+   year = {2005},
+   type = {Book}
+}
+
+@techreport{RN496,
+   author = {Hollis, Brian},
+   title = {Experimental and Computational Aerothermodynamics of a Mars Entry Vehicle},
+   year = {1996},
+   type = {Report}
+}
+
+@article{RN501,
+   author = {Hollis, Brian R. and Perkins, John N.},
+   title = {High-Enthalpy Aerothermodynamics of a Mars Entry Vehicle Part 1: Experimental Results},
+   journal = {Journal of Spacecraft and Rockets},
+   volume = {34},
+   number = {4},
+   pages = {449-456},
+   DOI = {10.2514/2.3257},
+   url = {https://arc.aiaa.org/doi/abs/10.2514/2.3257},
+   year = {1997},
+   type = {Journal Article}
+}
+
+@article{RN502,
+   author = {Hollis, Brian R. and Perkins, John N.},
+   title = {High-Enthalpy Aerothermodynamics of a Mars Entry Vehicle Part 2: Computational Results},
+   journal = {Journal of Spacecraft and Rockets},
+   volume = {34},
+   number = {4},
+   pages = {457-463},
+   ISSN = {0022-4650},
+   DOI = {10.2514/2.3258},
+   url = {https://doi.org/10.2514/2.3258},
+   year = {1997},
+   type = {Journal Article}
+}
+
+@book{RN428,
+   author = {Igra, Ozer and Seiler, Friedrich},
+   title = {Experimental methods of shock wave research},
+   publisher = {Springer International Publishing},
+   address = {Cham},
+   series = {Shock Wave Science and Technology Reference Library ; 9},
+   ISBN = {9783319237459},
+   DOI = {10.1007/978-3-319-23745-9},
+   year = {2016},
+   type = {Book}
+}
+
+@inbook{RN482,
+   author = {Ilich, Zdenĕk and Grossir, Guillaume and Chazot, Olivier},
+   title = {Evaluation of the stagnation-point velocity gradient in low-enthalpy hypersonic flows},
+   ISBN = {1624105025},
+   DOI = {10.2514/6.2017-3984},
+   year = {2017},
+   type = {Book Section}
+}
+
+@phdthesis{RN492,
+   author = {Kirschner, Marco, Mundt, Christian, Fasoulas, Stefanos },
+   title = {Laserinduzierte Fluoreszenzspektroskopie von Molekulen in einem Hochenthalpie-Freistrahl zur Bestimmung der Rotationstemperatur},
+   university = {Universität der Bundeswehr München},
+   url = {https://nbn-resolving.org/urn:nbn:de:bvb:706-5228},
+   year = {2017},
+   type = {Thesis}
+}
+
+@article{RN414,
+   author = {Kirschner, Marco and Pudsey, Adrian and Korol, F and Sander, Tobias and Mundt, Christian},
+   title = {Laser-Induced Fluorescence Investigations for Temperature Measurements in a Carbon Dioxide Flow},
+   journal = {Thermophysics and Heat Transfer},
+   volume = {32},
+   year = {2018},
+   type = {Journal Article}
+}
+
+@article{RN471,
+   author = {Kirschner, M. and Wobst, T. and Rittmeister, B. and Mundt, Christian},
+   title = {Erosion Testing of Thermal Barrier Coatings in a High Enthalpy Wind Tunnel},
+   journal = {Journal of Engineering for Gas Turbines and Power},
+   volume = {137},
+   DOI = {10.1115/1.4028469},
+   year = {2015},
+   type = {Journal Article}
+}
+
+@article{RN468,
+   author = {Kolesnikov, Anatoly},
+   title = {The concept of local simulation for stagnation point heat transfer in hypersonic flows - Applications and validation},
+   journal = {21st Aerodynamic Measurement Technology and Ground Testing Conference},
+   DOI = {doi:10.2514/6.2000-2515
+10.2514/6.2000-2515},
+   url = {https://doi.org/10.2514/6.2000-2515},
+   year = {2000},
+   type = {Journal Article}
+}
+
+@article{RN464,
+   author = {Kolesnikov, A. F.},
+   title = {Conditions of simulation of stagnation point heat transfer from a high-enthalpy flow},
+   journal = {Fluid dynamics},
+   volume = {28},
+   number = {1},
+   pages = {131-137},
+   ISSN = {0015-4628},
+   DOI = {10.1007/BF01055676},
+   year = {1993},
+   type = {Journal Article}
+}
+
+@misc{RN484,
+   url = {https://blog.gridpro.com/know-your-mesh-for-reentry-vehicles/},
+   year = {2020},
+   type = {Blog}
+}
+
+@article{RN458,
+   author = {M, Bugel and Reynier, Ph and A, Smith},
+   title = {Survey of European and major ISC facilities for supporting Mars and Sample Return Missions Aerothermodynamics Analysis and Tests required for Thermal Protection System and Dynamic Stability},
+   journal = {International Journal of Aerospace Engineering},
+   volume = {957629},
+   pages = {18 p},
+   year = {2011},
+   type = {Journal Article}
+}
+
+@article{RN430,
+   author = {Mahaffy, P. R. and Benna, M. and Elrod, M. and Yelle, R. V. and Bougher, S. W. and Stone, S. W. and Jakosky, B. M.},
+   title = {Structure and composition of the neutral upper atmosphere of Mars from the MAVEN NGIMS investigation},
+   journal = {Geophysical research letters},
+   volume = {42},
+   number = {21},
+   pages = {8951-8957},
+   ISSN = {0094-8276},
+   DOI = {10.1002/2015GL065329},
+   year = {2015},
+   type = {Journal Article}
+}
+
+@inproceedings{RN497,
+   author = {Mahzari, Milad and Braun, R. D. and White, Todd, R.},
+   title = {Reconstruction of Mars Pathfinder Aerothermal Heating and Heatshield Material Response Using Inverse Methods},
+   booktitle = {43rd AIAA Thermophysics Conference},
+   type = {Conference Proceedings}
+}
+
+@inproceedings{RN449,
+   author = {Marini, Marco and Di Benedetto, Sara and Rufolo, Giuseppe and Di Clemente, Marco and Borrelli, Salvatore},
+   title = {Test Design Methodologies for Flight Relevant Plasma Wind Tunnel Experiments},
+   booktitle = {Proceedings of West-East High Speed Flow Field Conference},
+   type = {Conference Proceedings}
+}
+
+@misc{RN442,
+   DOI= {10.2514/6.2014-2537},
+   url = {https://arc.aiaa.org/doi/abs/10.2514/6.2014-2537},
+   year = {2014},
+   type = {Conference Paper}
+}
+
+@inbook{RN451,
+   author = {Marynowski, Thomas and Loehle, Stefan and Fasoulas, Stefanos and Meindl, Arne and Zander, Fabian},
+   title = {Aerothermodynamic Investigation of Inductively Heated CO2 Plasma Flows for Mars Entry Testing},
+   booktitle = {45th AIAA Plasmadynamics and Lasers Conference},
+   series = {AIAA AVIATION Forum},
+   publisher = {American Institute of Aeronautics and Astronautics},
+   DOI = {doi:10.2514/6.2014-2537
+10.2514/6.2014-2537},
+   url = {https://doi.org/10.2514/6.2014-2537},
+   year = {2014},
+   type = {Book Section}
+}
+
+@article{RN455,
+   author = {Menter, F. R.},
+   title = {Two-equation eddy-viscosity turbulence models for engineering applications},
+   journal = {AIAA journal},
+   volume = {32},
+   number = {8},
+   pages = {1598-1605},
+   ISSN = {0001-1452},
+   DOI = {10.2514/3.12149},
+   year = {1994},
+   type = {Journal Article}
+}
+
+@techreport{RN480,
+   author = {Metacomp Technologies},
+   title = {CFD++ V19.1 Manual},
+   year = {2022},
+   type = {Report}
+}
+
+@article{RN474,
+   author = {Milos, F. S. and Chen, Y. K. and Congdon, W. M. and Thornton, J. M.},
+   title = {Mars Pathfinder Entry Temperature Data, Aerothermal Heating, and Heatshield Material Response},
+   journal = {Journal of Spacecraft and Rockets},
+   volume = {36},
+   number = {3},
+   year = {1999},
+   type = {Journal Article}
+}
+
+@article{RN494,
+   author = {Moreira, Farney Coutinho and Wolf, William Roberto and Azevedo, João Luiz F.},
+   title = {Thermal analysis of hypersonic flows of carbon dioxide and air in thermodynamic non-equilibrium},
+   journal = {International Journal of Heat and Mass Transfer},
+   volume = {165},
+   pages = {120670},
+   ISSN = {0017-9310},
+   DOI = {https://doi.org/10.1016/j.ijheatmasstransfer.2020.120670},
+   url = {https://www.sciencedirect.com/science/article/pii/S0017931020336061},
+   year = {2021},
+   type = {Journal Article}
+}
+
+@book{RN478,
+   author = {Moura, Augusto and Rosa, Maurício},
+   title = {A computer program for calculating normal and oblique shock waves for airflows in chemical and thermodynamic equilibrium},
+   DOI = {10.13140/2.1.1737.0243},
+   year = {2013},
+   type = {Book}
+}
+
+@inbook{RN429,
+   author = {Mundt, Christian},
+   title = {Development of the New Piston-Driven Shock-Tunnel HELM},
+   series = {Shock Wave Science and Technology Reference Library},
+   publisher = {Springer International Publishing},
+   address = {Cham},
+   pages = {265-283},
+   ISBN = {3319237446},
+   DOI = {10.1007/978-3-319-23745-9_8},
+   year = {2015},
+   type = {Book Section}
+}
+
+@misc{RN413,
+   year = {2016},
+   type = {Conference Paper}
+}
+
+@misc{RN431,
+   url = {https://www.nasa.gov/image-feature/jpl/perseverance-rover-decelerates-in-the-martian-atmosphere},
+   year = {2020},
+   type = {Web Page}
+}
+
+@misc{RN459,
+   url = {https://nci.org.au/users/nci-terms-and-conditions-access},
+   year = {2022},
+   type = {Web Page}
+}
+
+@inbook{RN448,
+   author = {Noeding, Peter and Martinez Schramm, Jan},
+   title = {Numerical Rebuilding of Shock Tube Experiments in CO2 Flow under Conditions Relevant for Mars Entry Probes},
+   booktitle = {11th AIAA/ASME Joint Thermophysics and Heat Transfer Conference},
+   series = {AIAA AVIATION Forum},
+   publisher = {American Institute of Aeronautics and Astronautics},
+   DOI = {doi:10.2514/6.2014-2549
+10.2514/6.2014-2549},
+   url = {https://doi.org/10.2514/6.2014-2549},
+   year = {2014},
+   type = {Book Section}
+}
+
+@article{RN470,
+   author = {Paterna, Diego and Monti, Rodolfo and Savino, Raffaele and Esposito, Antonio},
+   title = {Experimental and Numerical Investigation of Martian Atmosphere Entry},
+   journal = {Journal of spacecraft and rockets},
+   volume = {39},
+   number = {2},
+   pages = {227-236},
+   ISSN = {0022-4650},
+   DOI = {10.2514/2.3804},
+   year = {2002},
+   type = {Journal Article}
+}
+
+@article{RN495,
+   author = {Qu, Feng and Chen, Jiaojiao and Sun, Di and Bai, Junqiang and Zuo, Guang},
+   title = {A grid strategy for predicting the space plane's hypersonic aerodynamic heating loads},
+   journal = {Aerospace science and technology},
+   volume = {86},
+   pages = {659-670},
+   ISSN = {1270-9638},
+   DOI = {10.1016/j.ast.2019.01.049},
+   year = {2019},
+   type = {Journal Article}
+}
+
+@misc{RN460,
+   url = {https://policies.rmit.edu.au/document/view.php?id=75},
+   year = {2022},
+   type = {Web Page}
+}
+
+@inproceedings{RN412,
+   author = {Roos, Tim and Pudsey, Adrian and Sander, Tobias and garcia-Garrido, Javier and Mundt, Christian and Bricalli, Mathew},
+   title = {Numerical Investigation of High Temperature CO2-N2 Flows in a Plasma Wind Tunnel Facility},
+   booktitle = {HiSST: International Conference on High-Speed Vehicle Science Technology},
+   publisher = {CEAS},
+   year = {2018},
+   type = {Conference Proceedings}
+}
+
+@article{RN489,
+   author = {Sakraker, Isil and Chazot, Olivier and Carvalho, Joao Paulo},
+   title = {Performance of cork-based thermal protection material P50 exposed to air plasma: An experimental study},
+   journal = {CEAS space journal},
+   volume = {14},
+   number = {2},
+   pages = {377-393},
+   ISSN = {1868-2502},
+   DOI = {10.1007/s12567-021-00395-z},
+   year = {2021},
+   type = {Journal Article}
+}
+
+@misc{RN443,
+   year = {2018},
+   type = {Conference Paper}
+}
+
+@misc{RN479,
+   volume = {2022},
+   number = {2/6/2022},
+   url = {https://cearun.grc.nasa.gov/ThermoBuild/index_ds.html},
+   year = {2020},
+   type = {Web Page}
+}
+
+@article{RN475,
+   author = {Spencer, D. A. and Blanchard, R. C. and Braun, R. D. and Kallemeyn, P. H. and W., Thurman. S.},
+   title = {Mars Pathfinder Entry, Descent, and Landing Reconstruction},
+   journal = {Journal of Spacecraft and Rockets},
+   volume = {36},
+   number = {3},
+   year = {1999},
+   type = {Journal Article}
+}
+
+@inbook{RN440,
+   author = {Starkloff, M. and Mundt, Ch},
+   title = {Investigation of Chemical Non-equilibrium Hypersonic Flows in Carbon Dioxide–Nitrogen Atmospheres Using a Coupled Euler–Boundary-Layer Method},
+   publisher = {Springer International Publishing},
+   address = {Cham},
+   pages = {133-137},
+   ISBN = {3319462113},
+   DOI = {10.1007/978-3-319-46213-4_21},
+   year = {2017},
+   type = {Book Section}
+}
+
+@inproceedings{RN441,
+   author = {Starkloff, M. and Mundt, Ch.},
+   title = {Investigation of Chemical Non-equilibrium Hypersonic Flows in Carbon Dioxide–Nitrogen Atmospheres Using a Coupled Euler–Boundary-Layer Method},
+   series = {30th International Symposium on Shock Waves 1},
+   publisher = {Springer International Publishing},
+   pages = {133-137},
+   ISBN = {978-3-319-46213-4},
+   type = {Conference Proceedings}
+}
+
+@techreport{RN473,
+   author = {Thompson, R},
+   title = {Engineering Capstone Project Part A Project Proposal and Risk assessment: Numerical simulation of supersonic thermochemical flow in mars entry conditions},
+   institution = {RMIT},
+   year = {2022},
+   type = {Report}
+}
+
+@inbook{RN446,
+   author = {Tu, Jiyuan and Yeoh, Guan-Heng and Liu, Chaoqun},
+   title = {Chapter 4 - CFD Mesh Generation: A Practical Guideline},
+   booktitle = {Computational Fluid Dynamics (Third Edition)},
+   editor = {Tu, Jiyuan and Yeoh, Guan-Heng and Liu, Chaoqun},
+   publisher = {Butterworth-Heinemann},
+   pages = {125-154},
+   ISBN = {978-0-08-101127-0},
+   DOI = {https://doi.org/10.1016/B978-0-08-101127-0.00004-0},
+   url = {https://www.sciencedirect.com/science/article/pii/B9780081011270000040},
+   year = {2018},
+   type = {Book Section}
+}
+
+@article{RN467,
+   author = {Turchi, Alessandro and Matesanz Saiz, Juan J. and Magin, Thierry E. and Chazot, Olivier},
+   title = {Duplication of hypersonic stagnation-region aerothermochemistry and gas-surface interaction in high-enthalpy ground testing},
+   journal = {Experiments in fluids},
+   volume = {62},
+   number = {11},
+   ISSN = {0723-4864},
+   DOI = {10.1007/s00348-021-03320-6},
+   year = {2021},
+   type = {Journal Article}
+}
+
+@article{RN463,
+   author = {Vasil’evskii, S. A. and Gordeev, A. N. and Kolesnikov, A. F.},
+   title = {Local modeling of the aerodynamic heating of the blunt body surface in subsonic high-enthalpy air flow. Theory and experiment on a high-frequency plasmatron},
+   journal = {Fluid dynamics},
+   volume = {52},
+   number = {1},
+   pages = {158-164},
+   ISSN = {0015-4628},
+   DOI = {10.1134/S001546281701015X},
+   year = {2017},
+   type = {Journal Article}
+}
+
+@inbook{RN439,
+   author = {Wright, Michael and Edquist, Karl and Tang, Chun and Hollis, Brian and Krasa, Paul and Campbell, Charles},
+   title = {A Review of Aerothermal Modeling for Mars Entry Missions},
+   booktitle = {48th AIAA Aerospace Sciences Meeting Including the New Horizons Forum and Aerospace Exposition},
+   DOI = {10.2514/6.2010-443},
+   url = {https://arc.aiaa.org/doi/abs/10.2514/6.2010-443},
+   year = {2010},
+   type = {Book Section}
+}
+
+@article{RN456,
+   author = {Yano, R. and Contini, V. and Plonjes, E. and Palm, P. and Merriman, S. and Aithal, S. and Adamovich, I. and Lempert, W. and Subramaniam, V. and Rich, J. W.},
+   title = {Supersonic Nonequilibrium Plasma Wind-Tunnel Measurements of Shock Modification and Flow Visualization},
+   journal = {AIAA journal},
+   volume = {38},
+   number = {10},
+   pages = {1879-1888},
+   ISSN = {0001-1452},
+   DOI = {10.2514/2.841},
+   year = {2000},
+   type = {Journal Article}
+}
+
+@article{RN466,
+   author = {Zhang, Jun and Fang, GuoDong and Yang, LingWei and Li, Wei and Hong, ChangQing and Meng, SongHe},
+   title = {Comparison of ablative and compressive mechanical behavior of several PICA-like ablative materials},
+   journal = {Science China. Technological sciences},
+   volume = {63},
+   number = {8},
+   pages = {1478-1486},
+   ISSN = {1674-7321},
+   DOI = {10.1007/s11431-020-1618-2},
+   year = {2020},
+   type = {Journal Article}
+}
+

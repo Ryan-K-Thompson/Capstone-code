@@ -1,0 +1,152 @@
+\documentclass[conf]{new-aiaa}
+%\documentclass[journal]{new-aiaa} for journal papers
+\usepackage[utf8]{inputenc}
+
+\usepackage{comment}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage[version=4]{mhchem}
+\usepackage{siunitx}
+\usepackage{longtable,tabularx}
+\setlength\LTleft{0pt} 
+
+\title{Investigation of a Small CO2 Plasma Wind-Tunnel for Mars Atmospheric Entry Simulation}
+
+\author{Ryan K. Thompson\footnote{Undergraduate, RMIT University, Melbourne}}
+\affil{RMIT University}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+this is the abstract 
+
+
+\end{abstract}
+
+\section{Nomenclature}
+\begin{comment}
+{\renewcommand\arraystretch{1.0}
+\noindent\begin{longtable*}{@{}l @{\quad=\quad} l@{}}
+$A$  & amplitude of oscillation \\
+$a$ &    cylinder diameter \\
+$C_p$& pressure coefficient \\
+$Cx$ & force coefficient in the \textit{x} direction \\
+$Cy$ & force coefficient in the \textit{y} direction \\
+c   & chord \\
+d$t$ & time step \\
+$Fx$ & $X$ component of the resultant pressure force acting on the vehicle \\
+$Fy$ & $Y$ component of the resultant pressure force acting on the vehicle \\
+$f, g$   & generic functions \\
+$h$  & height \\
+$i$  & time index during navigation \\
+$j$  & waypoint index \\
+$K$  & trailing-edge (TE) nondimensional angular deflection rate
+\end{longtable*}}
+\end{comment}
+
+\section{Introduction}
+    \subsection{Problem statement}
+    Now and in the foreseeable future, all scientific exploration on the surface of Mars requires entry through the Martian atmosphere at hypersonic or greater speeds. Heat transfer between the intense thermal environment ahead of the vehicle and the scientific payload must be minimized to prevent damage or destruction, therefore thermal protection systems (TPS) must be developed. Due to the level of uncertainty in existing in models of these thermo-chemical flows, TPS must be over designed; this increases the weight of the vehicle which increases total mission cost and reduces scientific payload capacity \cite{wright2010}. TPS can be optimized and validated by testing on the ground in high enthalpy plasma wind tunnels. Currently, to experimentally derive the thermal load over the whole TPS surface very large plasma wind tunnels must be used \cite{Marini}. By using local heat transfer simulation (LHTS) methods, small plasma wind tunnels can be used to determine the heat transfer at stagnation point and extrapolate this value to flight \cite{Turchi2021}. This project aims to (1) reduce costs associated with ground testing by demonstrating that small scale supersonic plasma wind tunnels can match heat transfer at the stagnation point by application of LHTS, and (2) investigate the accuracy of the boundary layer properties and heat transfer at locations other than the stagnation point.
+
+\subsection{Research questions}
+    In earlier work, three main research questions were identified based on a literature review performed at that stage \cite{Thompson2022}:
+    \begin{enumerate}
+        \item Is the Uni-BwM plasma wind tunnel capable of producing the environmental conditions to model the stagnation point heat flux of Mars entry vehicles using the LHTS method?
+        \item How accurate is the heat flux profile over the surface of an experimental Mars entry vehicle in a plasma wind tunnel when compared to real flight?
+        \item How accurate are the boundary layer properties of an experimental Mars entry vehicle in a plasma wind tunnel when compared to real flight?
+    \end{enumerate}
+
+\section{Literature review}
+    \subsection{Mars atmospheric entry}
+        An understanding of Martian aerothermal entry conditions is essential for the design of efficient and safe thermal protection systems (TPS), which is complicated by the high entry speeds and the atmospheric composition. Historical Mars missions have entered the Martian atmosphere at speeds of 5.5-7.5 km/s, and future entry trajectories may be even faster \cite{wright2010}. In these entry conditions the flow is hypersonic which creates strong shockwaves, high temperature flow around the vehicle and other complexities (possibly thin boundary layers, shock boundary layer interaction and shock-shock interaction). The temperatures and velocities are so extreme that the gas in the flow can dissociate, which can causes chemical equilibrium or non-equilibrium flow conditions (Figure 1 shows the change in the equilibrium composition with temperature). The local flow around the vehicle can be further complicated by the ablation of the TPS which changes the flow chemistry as well as the surface geometry, composition and thermal properties \cite{wright2010}. The Martian atmosphere is comprised predominantly of carbon dioxide and nitrogen with trace amounts of argon (which is inert) and other gases. Fertig proposed that the atmosphere can be modelled as 97\% CO\textsubscript{2} and 3\% N\textsubscript{2}, which has become the standard assumption in Mars atmospheric entry models \cite{Fertig2012}. The nature of these conditions can vary with the entry trajectory (velocity, path and AOA), TPS materials and entry vehicle geometry. The interaction between ablative TPS materials and the high temperature reacting flows is very complex (including surface reactions, radiation and species diffusion), and are often omitted from aerodynamic investigations. The accurate modelling of these flows remains an open problem in engineering, which leads to the necessary over-design of TPS systems for safety, which increases mission costs . 
+        
+    \subsection{Simulation of Mars atmospheric entry}
+        Our incomplete understanding of Mars entry flows can be developed by the joint application of experimental tests (ground and flight) and computational fluid dynamics (see Figure \ref{fig:extrapolationtoflight}). Full replication of all of the features of Mars entry flow in a wind tunnel would require the reproduction of the Mach number, Reynolds number, the model dimension, gas composition, gas chemistry, and the gas enthalpy \cite{Marini}. Meeting all of these requirements simultaneously is not feasible on the ground due to physical limitations. Therefore a variety of test facilities are required to provide a variety of experimental data types to validate computational fluid dynamics models for the range of flight parameters required. 
+        \begin{figure}
+            \centering
+            \includegraphics[width=10cm]{Images/Marini2010.png}
+            \caption{Relationship between numerical simulation (CFD), physical simulation and flight \cite{Marini}}
+            \label{fig:extrapolationtoflight}
+        \end{figure}
+        
+        Plasma   wind tunnels are used to test the thermal loads on Mars entry vehicles and the performance of ablative TPS materials. They are capable of producing the high enthalpy flow required to create the high temperatures, thermal loads and equilibrium/non-equilibrium gas chemistry effects that occur in flight \cite{Herdrich2003}. Simulation of full scale vehicles or components is possible in large diameter plasma wind tunnels such as the CIRA plasma wind tunnel \cite{Marini}. However, large scale facilities are expensive to construct and operate. A theoretical framework for local heat transfer simulation (LHTS) has been developed, whereby the heat transfer at the stagnation point on a blunt body in a hypersonic flow can be replicated on the ground via comparative analysis (see Figure 3\footnote{this must be fixed}) \cite{Vasil2017}. The heat transfer is comparable if the total enthalpy, the stagnation pressure and the velocity gradient of the real flight is duplicated on the experimental model \cite{Vasil2017,Kolesnikov1993}. This means that if the geometry of the test article and the test conditions is properly prepared, then the heat transfer at the stagnation point can be matched with real flight parameters, independent of the bodies scale and the test velocity – which enables some testing in smaller and even subsonic high enthalpy plasma wind tunnels \cite{Kolesnikov2000}.  It has been demonstrated in numerical models that the temperature, density, Mach number and mass fraction of chemical species can be made to perfectly match flight conditions within the boundary layer along the stagnation line for non-reacting, catalytic and ablative surfaces \cite{Turchi2021}. As a result, experiment design using this method has become relatively popular \cite{Helber2014,Chinaraj2020,Sakraker2021,Loehle2021}. However the accuracy of non-stagnation regions of the flow when the LHTS method is applied has not been investigated. Some limited investigation of entry body flow features in a small scale plasma wind tunnel has been conducted \cite{Yano2000}, however a LHTS method was not applied and therefore extrapolation to flight is problematic.
+        
+        The LHTS method (and similar methods) is used to design tests for ablative TPS materials. However, almost all of the available literature on TPS material testing has been conducted in Nitrogen or air test gasses (i.e. \cite{Kirschner2015}) . For ablative TPS materials intended for use on Mars entry vehicles, testing with CO2 test gas would be advantageous because the chemical composition of the gas is a primary determinant of the ablation rate \cite{Zhang2020}. This literature review identified only two examples where this was conducted \cite{Zhang2020,Paterna2002}.
+
+    \subsection{Plasma wind tunnel at the University of Bundeswehr Munich High Energy Laboratory}
+        The Uni-BwM Plasma-Windkanal (PWK) is a small scale, low velocity, high enthalpy plasma wind tunnel which has been the subject of research collaboration between Uni-BwM and RMIT University \cite{Mundt2015}. The plasma wind tunnel has previously been used to test ablative TPS materials in high enthalpy air (Earth) flows \cite{Mundt2015}. However, recently the tunnel has been modified to operate under Martian atmospheric entry conditions with a carbon dioxide test gas and nitrogen dilutant \cite{Mundt2016}. This included the development of a new Mach 3.5 nozzle with an exit diameter of 20 mm. In the tunnel, a plasma arc is generated between two electrodes, heating the test gas which is then allowed to settle in the mixing chamber before passing through the nozzle (shown in Figure 5). The plasma arc adds up to 20 MJ/kg of stagnation enthalpy to the flow, and has a maximum power of 124 kW \cite{Mundt2016,Roos2018}. The gas in the arc chamber can reach stagnation temperatures of up to 6000°K \cite{Sander2018}. However, because of fluctuations in the arc’s position, the stagnation enthalpy can vary by ±12\% over time during testing \cite{Kirschner2018}. Mass flow rates of 1 to 50 g/s are allowable. The chamber pressure can be up to 2 MPa, and the test section pressure from 0.6 - 500kPa \cite{Mundt2016}. The tunnel can be operated for over 30 minutes \cite{Sander2018}. The walls of the plasma wind tunnel are water cooled to a constant temperature of 300°K during operation \cite{Roos2018}. 
+        
+        Figure 6\footnote{} presents the plasma wind tunnels operational parameters in relation to historical Mars entry flows \cite{Marynowski2014}. The specific enthalpies achievable by the plasma wind tunnel are for the most part similar to the range of enthalpies observed in historical Mars missions, with the exception of Pathfinder and the low speed sections of all missions. Note: The velocity presented in the figure is not achievable in the plasma wind tunnel, however the equivalent specific enthalpy is. Additionally, the total pressure of the plasma wind tunnel flow is an order of magnitude higher than in the Mars missions. Notably however, this operational range is for the Mach 3.5 nozzle, which requires a large pressure difference, resulting in a high total pressure in the flow. The total pressure of the flow could possibly be reduced to the equivalent levels by installing a low supersonic or subsonic nozzle \cite{AndersonFundamentals}, however, information relating to the performance envelope of the plasma wind tunnel with alternate nozzles (and CO2 test gas) is unavailable to this author at the time of publication. Also, the stagnation pressure would be expected to reduce due to a bow shock ahead of any test article placed in the supersonic flow; the pressure drop must be evaluated. 
+        
+        Enabled by the LIF temperature measurement techniques \footnote{this is vauge af} and the conversion to CO2, the Uni-BwM plasma wind tunnel has been used to experimentally investigate high enthalpy flows in Mars conditions. The initial publication by the research group investigated the plasma wind tunnel with CO2 as the test gas, designed a new nozzle for operation at Mach 3.5 and verified the function of the LIF temperature measurement device \cite{Mundt2016}. Additionally, a CFD model of the wind tunnel was developed in CFD++ using a steady state implicit numerical scheme with a 6 species, 27 reaction model for CO2 test gas. When using Menter’s two equation Shear Stress Transport (SST) k-ω turbulence model \cite{Menter1994}, the CFD result was successfully verified against experimental results (at h0 = 2 MJ/kg) using temperature measurements via LIF \cite{Mundt2016}. A second study extended the same CFD model beyond the experimental tests, to investigate the sensitivity of the plasma wind tunnels behavior to the N2 dilution ratio at high stagnation enthalpies \cite{Roos2018}. Based on this model, it is expected that the jet plume diameter will not change with the enthalpy of the flow, bounded by the facilities capabilities. A third study investigated the extent of energy transfer via radiation at the h0 = 2.1 MJ/kg operation condition, by including a radiation energy transfer mechanism in the CFD model \cite{Garcia2018}. The authors demonstrated that radiation is a second order energy transfer mechanism in low stagnation enthalpy operating conditions. Although the significance of radiation is likely to increase at higher stagnation enthalpy conditions, radiation energy transfer could be omitted from future CFD models. Experimental tests have validated numerical models of the Uni-BwM plasma wind tunnel,  and extending (or modifying) the same CFD models to other operating conditions is feasible and reasonable.
+        
+    \subsection{Mars Pathfinder}
+        During the R&D and design phases of the Mars Pathfinder mission NASA conducted several experimental and computational investigations into the aerothermal heating of the vehicle during atmospheric entry conditions. The experiments were conducted in the Mach 10, high enthalpy HYPULSE facility with both air and CO2 test gas, where the fore and aft body heat transfer was measured at a range of angles of attack and Reynolds numbers on a R=25.4 mm test model \cite{Holis1996}. NASA research group also developed several CFD models of the experimental flow, and successfully validated those models \cite{Holis1996,Hollis1997part1Experiment,Hollis1997part2CFD}. The test duration was approximately 10 $\mu$s, therefore there is not enough time for the surface temperature of the test article to equilibrate with that of the flow, so it was appropriate to be modelled as an isothermal 300°K wall. The flow was assumed to be laminar and under thermal non-equilibrium, and a 2D axisymmetric mesh was utilized. The results indicated that the forebody flow was continuum and the wake was slip flow, and that thermal non-equilibrium occurred in the shock and wake. The experimental results from these experiments were also utilized by Moreira et al. to validate a similar numerical model of the Pathfinder entry vehicle, where the domain was limited to the vehicles forebody \cite{Moreira2021}. The domain was closed downstream of the expansion wave that occurs at the  \dots{} \footnote{trailing sentence}
+
+\section{CFD simulation}
+    All CFD simulations are performed on a single node of a high performance computing cluster with two 20 core Intel Xeon processors and 500 GB of RAM . Meshing and model setup is performed on a laptop with 8 GB of RAM, which limits the mesh size of the input file that can be created in the CFD++ AUI. 
+    \subsection{Meshing}
+        The commercially available Pointwise software is used for meshing. \footnote{TEMP: input required}
+ 
+    \subsection{Numerical formulation}
+        CFD++ is a commercially available computational fluid dynamics solver and is used in this study. In this study CFD++ solves the Reynolds Averaged Naiver-Stokes (RANS) equations on a 2D-Asymmetric mesh. The flow is assumed to be laminar due to the low Reynolds numbers of the flows investigated (see section \dots for the Re estimation).
+        \subsubsection{RANS}
+        
+        \subsubsection{Finite rate chemistry}
+        The reaction schemes applied are those proposed by Fertig, which are valid for chemical and thermal non-equilibrium flows under Mars atmospheric entry conditions \cite{Fertig2012}. The Arrhenius reaction rate model is applied, where the finite reaction rate for each reaction is determined using an empirically derived relationship based on the activation energy ($E_a⁄R$) and curve fitting parameters denoted the pre-exponential factor ($A$) and the temperature dependance ($\eta$).
+        \begin{equation}
+            \kappa = AT^\eta \times exp\left(-\frac{E_\alpha/R}{T}\right)
+        \end{equation}
+        The Mars CO\textsubscript{2} reaction model has 6 species (CO\textsubscript{2}, CO, C\textsubscript{2}, O\textsubscript{2}, C, C) and 27 reactions, which are provided in an abbreviated form in Table \ref{tab:CO2Arrhenius}.
+        
+        \begin{table}[!ht]
+            \centering
+            \begin{tabular}{|c|c|c|c|}
+            \hline
+                Reaction  & A (m³/mole/s)  & $\eta$ (-)  & E\_a⁄R (°K)  \\ \hline
+               $CO_2 + mol \rightleftharpoons CO + mol$ & 6.9 · 10\textsuperscript{15} & -1.5  & 63275  \\ \hline
+                $CO_2 + atom \rightleftharpoons CO + O + atom$ & 1.4 · 10\textsuperscript{16} & -1.5  & 63275  \\ \hline
+                $C_2 + M \rightleftharpoons 2C + M$ & 1.5 · 101\textsuperscript{0} & 0  & 71600  \\ \hline
+                $CO + mol \rightleftharpoons C + O +mol$ & 2.3 · 10\textsuperscript{14} & -1.0  & 129000  \\ \hline
+                $CO + atom \rightleftharpoons C + O + atom$ & 3.4 · 10\textsuperscript{14} & -1.0  & 129000  \\ \hline
+                $O_2 + mol \rightleftharpoons 2O + mol$ & 2.0 · 10\textsuperscript{15} & -1.5  & 59750  \\ \hline
+                $O_2 + atom \rightleftharpoons 2O + atom$ & 1.0 · 10\textsuperscript{16} & -1.5  & 59750  \\ \hline
+                $CO + O \rightleftharpoons C + O_2$ & 3.9 · 10\textsuperscript{7} & -0.18  & 69200   \\ \hline
+                $CO + C \rightleftharpoons C_2 + O$ & 2.0 · 10\textsuperscript{11} & -1.0  & 58000  \\ \hline
+            \end{tabular}
+            \caption{CO2 reaction scheme, Arrhenius parameters. Here, "M" is an arbitrary collision partner, "mol" is a molecular collision partner and “atom” is an atomic collision partner \cite{Fertig2012}}
+            \label{tab:CO2Arrhenius}
+        \end{table}
+        \subsubsection{Equation of state}     
+            The flow is assumed to be a real gas due to the high temperature and pressure fluctuations associated with the shift between the hypersonic freestream and the post-shock stagnation region on the vehicle forebody. A two parameter cubic equation of state of is applied:
+            \begin{equation}
+                p=\frac{RT}{\tilde{\nu}-b}-\frac{a}{\tilde{v}^{2}+b\tilde{u}\tilde{v}+\tilde{w}b^{2}
+            \end{equation}
+            \begin{equation}
+            Z_c=p_c\frac{p_c\tilde{v}_c}{RT_c}
+            \end{equation}
+            
+        \subsubsection{Transport properties}
+        \subsubsection{Numerical scheme}
+        
+    
+    \subsection{Model setup}
+    \subsection{Model validation}
+\section{Conclusion}
+
+
+\section*{Appendix}
+
+
+
+\begin{comment}
+\section*{Acknowledgments}
+\end{comment}
+
+\bibliography{RefrenceList}
+
+
+
+\end{document}
