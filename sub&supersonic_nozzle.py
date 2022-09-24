@@ -13,7 +13,9 @@ import scipy as scipy
 from sympy import symbols, Eq, solve
 from scipy import interpolate
 from scipy.optimize import fsolve, root
-
+from sdtoolbox import postshock, stagnation
+from sdtoolbox.postshock import PostShock_eq
+from sdtoolbox.stagnation import stgsolve
 
 def plenum_to_nozzle_inlet(H_add, P0):
     # Plenum
@@ -85,14 +87,53 @@ def stagnation_velocity_gradient(Ue,R_jet,R_model):
     beta = (Ue/R_model)*(1/(2-L-1.68*(L-1)**2-1.28*(L-1)**3))
     return beta 
 
+def altitude_from_density_long2019(density):
+    # Model based on Long et al. "Mars atmospheric entry guidance for optimal terminal altitude" 2019
+    def fun(alt):
+        return (2*10**(-4))*math.exp((40000-alt)/7500)-density #(0.699*math.exp(-0.00009*alt))/(0.1921*((-23.4-0.00222*alt)+273.1)) - density
+    altitude = scipy.optimize.fsolve(fun, (10000))
+    altitude = list(altitude)
+    return altitude
+
+def pressure_from_altitude_basicNASA(altitude):
+    # model is a bit sus from the NASA website https://www.grc.nasa.gov/WWW/K-12/rocket/atmosmrm.html
+    P_alt = 699*math.exp(-0.00009*altitude[0])
+    return P_alt
+
 def equivalent_flight_conditions(h0,P0,beta):
+    mech = 'airNASA9noions.cti'
+    q = 'CO2:1'    # assume CO2 atmosphere
+    
     v_flight = (2*h0)**0.5
     density_flight = P0/(v_flight**2)
+    altitude_flight = altitude_from_density_long2019(density_flight)
+    pressure_flight = pressure_from_altitude_basicNASA(altitude_flight) 
+    
+    gas_flight = ct.ThermoPhase(mech) 
+    gas_flight.DPY = density_flight, pressure_flight, q
+    temperature_flight = gas_flight.T
+    gas_flight.equilibrate('TP')
+    gas_flight()
+    
+    # evaluate post shock conditions in flight 
+    gas_flight_postshock = PostShock_eq(U1=v_flight, P1=pressure_flight, T1=temperature_flight, q=q, mech=mech)
+    
+    # evaluate stagnation density in flight 
+    output = stgsolve(gas = gas_flight_postshock, gas1 = gas_flight, U1 = v_flight, Delta = 0.2)
+    
+    print(output.rho)
+    
+    
+    # radius_flight = v_flight/(beta/(math.sqrt((8/3)*(density_flight/stagnation_density_flight))))
     
     print(
         "Flight velocity = "+str(v_flight)+' m/s \n'
         "Flight density = "+str(density_flight)+' kg/m3 \n'
+        "Flight pressure = "+str(pressure_flight)+' Pa \n'
+        "Flight temperature = "+str(temperature_flight)+' K \n'
+        "Flight altitude = "+str(altitude_flight[0]/1000)+' km \n'
         )
+    return output
     
 
 if __name__ == "__main__":
@@ -126,7 +167,7 @@ if __name__ == "__main__":
         "beta = "+str(beta) +" 1/s \n" 
         )
     
-    equivalent_flight_conditions(H_add,P0,beta)
+    output = equivalent_flight_conditions(H_add,P0,beta)
     
     try:
         import matplotlib.pyplot as plt
