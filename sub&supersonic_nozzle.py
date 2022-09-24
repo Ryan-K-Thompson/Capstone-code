@@ -11,6 +11,7 @@ import cantera as ct
 import sympy as sympy
 import scipy as scipy
 from sympy import symbols, Eq, solve
+from scipy import interpolate
 from scipy.optimize import fsolve, root
 
 
@@ -40,24 +41,59 @@ def isentropic(gas, mdot):
     p0 = gas.P
 
     amin = 1.e14
-    data = np.zeros((200, 9))
+    data = np.zeros((500, 10))
 
     # compute values for a range of pressure ratios
-    for r in range(200):
-        p = p0*(r+1)/201.0
+    for r in range(500):
+        p = p0*(r+1)/501.0
         gas.SP = s0, p # reset the gas entropy and pressure
 
         v = (2.0*(h0 - gas.h))**0.5      # h + V^2/2 = h0
         area = mdot/(gas.density*v)    # rho*v*(A/A*) = constant
  
         amin = min(amin, area) # determine the throat area
-        data[r, :] = [area, v/soundspeed(gas), gas.T, p/p0, gas.density_mass, gas.P, v, mdot, area]
+        data[r, :] = [area, v/soundspeed(gas), gas.T, p/p0, gas.density_mass, gas.P, v, mdot, area, (area/(3.14))**0.5]
 
         
     data[:, 0] /= amin # divide the area by the throat area to determine the area ratio
 
     return data, amin
 
+def Nozzle_selection(data, R_jet):
+    data_design = []
+    data_subsonic = []
+    # filter data for only subsonic mach numbers
+    for count, i in enumerate(data[:,1]):
+        if data[count,1]<1:
+            array = data[count,:]
+            data_subsonic.append(array.tolist())
+    data_subsonic = np.array(data_subsonic)
+    # interpolate data to determine design data for given radius
+    try:
+        for r in range(10):
+            value_r = float(scipy.interpolate.interp1d(data_subsonic[:,9],data_subsonic[:,r])(R_jet))
+            data_design.append(value_r)
+        # print(data_design)        
+        
+    except ValueError:
+        print('value below interpolation range')
+        
+    return data_design
+
+def stagnation_velocity_gradient(Ue,R_jet,R_model):
+    L = R_model/R_jet
+    beta = (Ue/R_model)*(1/(2-L-1.68*(L-1)**2-1.28*(L-1)**3))
+    return beta 
+
+def equivalent_flight_conditions(h0,P0,beta):
+    v_flight = (2*h0)**0.5
+    density_flight = P0/(v_flight**2)
+    
+    print(
+        "Flight velocity = "+str(v_flight)+' m/s \n'
+        "Flight density = "+str(density_flight)+' kg/m3 \n'
+        )
+    
 
 if __name__ == "__main__":
     print(__doc__)
@@ -65,10 +101,33 @@ if __name__ == "__main__":
     P_arc = 240*10**3
     H_add = 0.5*P_arc/mdot
     P0 = 9*10**3
-    
+    R_jet = 0.05
+    R_model = 0.0254
     gas = plenum_to_nozzle_inlet(H_add, P0)
     data, amin = isentropic(gas, mdot)
     print("H_add = " +str(H_add))
+    
+    data_subsonic = []
+    count2 = 0
+    
+    data_design = Nozzle_selection(data, R_jet)
+    v_design = data_design[6]
+    beta = stagnation_velocity_gradient(v_design, R_jet, R_model)
+    print(
+        "Nozzle parameters \n"
+        "Pressure = " + str(data_design[5]) + " Pa \n"
+        "Temperature = " + str(data_design[2]) + " K \n"
+        "Velocity = " + str(data_design[6]) + " m/s \n \n"
+        "A/A* = " + str(data_design[0]) + " Pa \n""Pressure = " + str(data_design[5]) + " Pa \n"
+        "P0/P = " + str(data_design[3]) + "  \n"
+        "Outlet radius = " + str(0.05) + " m \n \n"
+        "h0 = " + str(H_add/(10**6)) + " MJ/kg \n"
+        "P0 = " + str(P0) + " MJ/kg \n"
+        "beta = "+str(beta) +" 1/s \n" 
+        )
+    
+    equivalent_flight_conditions(H_add,P0,beta)
+    
     try:
         import matplotlib.pyplot as plt
         fig1 = plt.figure("Figure 1")
@@ -77,7 +136,7 @@ if __name__ == "__main__":
         plt.xlabel('Mach Number')
         plt.title('Isentropic Flow: Area Ratio vs. Mach Number')
         plt.grid()
-        plt.xlim(0,1)
+        # plt.xlim(0,1)
         plt.show()
         
 
@@ -92,30 +151,24 @@ if __name__ == "__main__":
         plt.show()
         
         fig2 = plt.figure("Figure 2")
-        plt.plot(data[:, 1], data[:, 9])
+        plt.plot(data[:, 1], data[:, 8])
         plt.ylabel('A actual')
         plt.xlabel("M")
         plt.title('')
         plt.grid()
 
         plt.show()
+
+
+        plt.show()
         
         fig3 = plt.figure("Figure 3")
-        plt.plot(data[:, 1], data[:, 8])
-        plt.ylabel('A throat')
-        plt.xlabel("M")
+        plt.plot(data[:, 1], data[:, 9])
+        plt.ylabel('Radius')
+        plt.xlabel('M')
         plt.title('')
         plt.grid()
-
-        # plt.show()
-        
-        # fig3 = plt.figure("Figure 3")
-        # plt.plot(data[:, 0], 1/data[:, 3])
-        # plt.ylabel('P0/P')
-        # plt.xlabel('Area Ratio')
-        # plt.title('Isentropic Flow: Area Ratio vs. P0/P')
-        # plt.grid()
-        # plt.show()
+        plt.show()
         
         # fig4 = plt.figure("Figure 4")
         # plt.plot(data[:, 1], 1/data[:, 3])
