@@ -285,7 +285,7 @@ def beta_curve_PWK(mdot_range,P_arc,P0_range,R_jet,R_model,resolution):
     H_add = (0.5*P_arc/mdot)
     print(P0)
     
-    fig3 = plt.figure("3",figsize=(10,5))
+    fig1 = plt.figure("1",figsize=(10,5))
     nice_wireframe(H_add,P0,beta_square)
     ax = plt.axes(projection='3d')
     # ax.plot_wireframe(H_add/(10**6), P0/(10**3), beta_square)
@@ -296,22 +296,18 @@ def beta_curve_PWK(mdot_range,P_arc,P0_range,R_jet,R_model,resolution):
     ax.set_zlabel("beta (1/s x10^3)")
     # plt.xlim((0,25))
     # plt.ylim((0,400))
-    fig3.colorbar(surf, shrink=0.5, aspect=5)
+    fig1.colorbar(surf, shrink=0.5, aspect=5)
     ax.view_init(20,50)
-    plt.title("PWK plot (R_outlet="+str(R_jet)+'mm, R_model='+str(R_model)+"mm)")
+    plt.title("PWK plot (R_outlet="+str(R_jet)+'m, R_model='+str(R_model)+"m)")
     plt.savefig('test.png', dpi=300)
 
-    return beta_square, mdot_linspace, P0_linspace, H_add_linspace
+    return beta_square, P0, H_add, mdot_linspace, P0_linspace, H_add_linspace
 
 
-def beta_curve_flight(H0_linspace,P0_range,R_flight_vehicle,resolution):
-    H_add_linspace = np.linspace(0.5*P_arc/mdot_range[0],0.5*P_arc/mdot_range[1],resolution)
-    mdot_linspace = 0.5*P_arc/H_add_linspace
-    P0_linspace = np.linspace(P0_range[0],P0_range[1],resolution)
-    beta_square = np.zeros((resolution,resolution))
-    beta_max=[0]
-    for count1, mdot in enumerate(H0_linspace):
-        for count2, P0 in enumerate(P0_linspace):
+def beta_curve_flight(H0_linspace,P0_linspace,R_flight_vehicle,resolution):
+    beta_square_flight = np.zeros((resolution,resolution)    )
+    for count1, h0 in enumerate(H0_linspace):
+        for count2, P0 in enumerate(P0_linspace-1):
             try:
                 mech = 'airNASA9noions.cti'
                 q = 'CO2:1'    # assume CO2 atmosphere
@@ -321,78 +317,61 @@ def beta_curve_flight(H0_linspace,P0_range,R_flight_vehicle,resolution):
                 altitude_flight = altitude_from_density_long2019(density_flight)
                 pressure_flight = pressure_from_altitude_basicNASA(altitude_flight) 
                 temperature_flight = temperature_from_altitude_basicNASA(altitude_flight)
+                print(
+                    "temperature = "+str(temperature_flight) +"\n"
+                    'density = '+str(density_flight)+"\n"
+                    "altitude = "+str(altitude_flight)
+                    )
+                # check for reasonable mars atmosphere
                 
-                gas_flight = ct.ThermoPhase(mech) 
-                gas_flight.TDY =  temperature_flight, density_flight, q
-                # temperature_flight = gas_flight.T
-                gas_flight.equilibrate('TV')
-                pressure_flight = gas_flight.P
-                print(pressure_flight)
+                if temperature_flight>[130]:
+                    if [0.00001]<density_flight<[0.01]:
+                        if altitude_flight>[3000]:
+                    
+                            gas_flight = ct.ThermoPhase(mech) 
+                            gas_flight.TDY =  temperature_flight, density_flight, q
+                            # temperature_flight = gas_flight.T
+                            gas_flight.equilibrate('TV')
+                            pressure_flight = gas_flight.P
+                            print(pressure_flight)
+            
+                            # evaluate post shock conditions in flight 
+                            gas_flight_postshock = PostShock_eq(U1=v_flight, P1=pressure_flight, T1=temperature_flight, q=q, mech=mech)
+                            
+                            # evaluate stagnation density in flight 
+                            try:
+                                output = stgsolve(gas = gas_flight_postshock, gas1 = gas_flight, U1 = v_flight, Delta = 0.5)
+                                stagnation_density_flight = output['rho'][-1] 
+                            
+                                # radius_flight = v_flight/(beta/(math.sqrt((8/3)*(density_flight/stagnation_density_flight))))
+                                beta_square_flight[count1][count2] = (v_flight/R_flight_vehicle)*math.sqrt((8/3)*(density_flight/stagnation_density_flight))
+                            except:
+                                beta_square_flight[count1][count2] = 0
+                else:
+                    beta_square_flight[count1][count2] = 0
+            except RuntimeWarning:
+                beta_square_flight[count1][count2] = 0
     
-    
-                
-                # gas_flight()
-                
-                # evaluate post shock conditions in flight 
-                gas_flight_postshock = PostShock_eq(U1=v_flight, P1=pressure_flight, T1=temperature_flight, q=q, mech=mech)
-                
-                # evaluate stagnation density in flight 
-                output = stgsolve(gas = gas_flight_postshock, gas1 = gas_flight, U1 = v_flight, Delta = 0.2)
-                stagnation_density_flight = output['rho'][-1] 
-                
-                radius_flight = v_flight/(beta/(math.sqrt((8/3)*(density_flight/stagnation_density_flight))))
-                
-                
-    #             H_add = 0.5*P_arc/mdot
-    #             gas = plenum_to_nozzle_inlet(H_add, P0)
-    #             data, amin = isentropic(gas, mdot)
-    #             print("H_add = " +str(H_add))
-                
-    #             data_subsonic = []
+    P0, H0 =np.meshgrid(P0_linspace,H0_linspace)
 
-                
-    #             data_design = Nozzle_selection(data, R_jet)
-    #             v_design = data_design[6]
-    #             beta = stagnation_velocity_gradient(v_design, R_jet, R_model)
-    #             print(
-    #                 "Nozzle parameters \n"
-    #                 "Pressure = " + str(data_design[5]) + " Pa \n"
-    #                 "Temperature = " + str(data_design[2]) + " K \n"
-    #                 "Velocity = " + str(data_design[6]) + " m/s \n \n"
-    #                 "A/A* = " + str(data_design[0]) + " Pa \n""Pressure = " + str(data_design[5]) + " Pa \n"
-    #                 "P0/P = " + str(1/data_design[3]) + "  \n"
-    #                 "Outlet radius = " + str(0.05) + " m \n \n"
-    #                 "h0 = " + str(H_add/(10**6)) + " MJ/kg \n"
-    #                 "P0 = " + str(P0) + " Pa \n"
-    #                 "beta = "+str(beta) +" 1/s \n" 
-    #                 )
-    #             beta_square[count1][count2]=beta
-    #             # beta_max = max(beta_max,beta) 
-    #             # print(beta_max)
-    #         except:
-    #             beta_square[count1][count2]=0
     
-    # P0, mdot =np.meshgrid(P0_linspace,mdot_linspace)
-    # H_add = (0.5*P_arc/mdot)
-    # print(P0)
-    
-    # fig3 = plt.figure("3",figsize=(10,5))
-    # nice_wireframe(H_add,P0,beta_square)
-    # ax = plt.axes(projection='3d')
-    # # ax.plot_wireframe(H_add/(10**6), P0/(10**3), beta_square)
-    # surf = ax.plot_surface(H_add/(10**6), P0/(10**3), beta_square/(10**3), cmap=cm.coolwarm, linewidth=1, antialiased=False, rcount=200, ccount=200)
-    # plt.gcf().set_size_inches(16, 8)
-    # ax.set_xlabel("H0 (MJ/kg)")
-    # ax.set_ylabel("P0 (kPa)")
-    # ax.set_zlabel("beta (1/s x10^3)")
-    # # plt.xlim((0,25))
-    # # plt.ylim((0,400))
-    # fig3.colorbar(surf, shrink=0.5, aspect=5)
-    # ax.view_init(20,50)
-    # plt.title("PWK plot (R_outlet="+str(R_jet)+'mm, R_model='+str(R_model)+"mm)")
-    # plt.savefig('test.png', dpi=300)
+    fig2 = plt.figure("2",figsize=(10,5))
+    nice_wireframe(H0,P0,beta_square_flight)
+    ax = plt.axes(projection='3d')
+    # ax.plot_wireframe(H_add/(10**6), P0/(10**3), beta_square)
+    surf = ax.plot_surface(H0/(10**6), P0/(10**3), beta_square_flight/(10**3), cmap=cm.coolwarm, linewidth=1, antialiased=False, rcount=200, ccount=200)
+    plt.gcf().set_size_inches(16, 8)
+    ax.set_xlabel("H0 (MJ/kg)")
+    ax.set_ylabel("P0 (kPa)")
+    ax.set_zlabel("beta (1/s x10^3)")
+    # plt.xlim((0,25))
+    # plt.ylim((0,400))
+    fig2.colorbar(surf, shrink=0.5, aspect=5)
+    ax.view_init(20,50)
+    plt.title("flight plot (R_flight_vehicle="+str(R_flight_vehicle)+'m')
+    plt.savefig('test2.png', dpi=300)
 
-    return beta_square, mdot_linspace, P0_linspace
+    return beta_square_flight, P0, H0
 
 def ding():
     import winsound
@@ -401,14 +380,31 @@ def ding():
     winsound.Beep(frequency, duration)
 
 def compare_beta(resolution):
-    beta_square, mdot_linspace, P0_linspace, H_add_linspace = beta_curve_PWK(mdot_range=[0.005,0.05], P_arc = 240*10**3, P0_range=[600,400*10**3], R_jet = 0.03, R_model = 0.01, resolution = 10)
-    beta_curve_flight(H0_linspace,P0_range,R_flight_vehicle,resolution)
+    beta_square_PWK, P0_grid_PWK, H0_grid_PWK, mdot_linspace, P0_linspace, H_add_linspace = beta_curve_PWK(mdot_range=[0.005,0.05], P_arc = 240*10**3, P0_range=[600,1000*10**3], R_jet = 0.03, R_model = 0.01, resolution=resolution)
+    beta_square_flight, P0_grid_flight, H0_grid_flight = beta_curve_flight(H_add_linspace,P0_linspace,1.652,resolution)
     
+    fig3 = plt.figure("3",figsize=(10,5))
+
+    ax = plt.axes(projection='3d')
+    # ax.plot_wireframe(H_add/(10**6), P0/(10**3), beta_square)
+    surf = ax.plot_wireframe(H0_grid_PWK/(10**6), P0_grid_PWK/(10**3), beta_square_PWK/(10**3), color = "red")
+    surf = ax.plot_wireframe(H0_grid_flight/(10**6), P0_grid_flight/(10**3), beta_square_flight/(10**3), color = 'blue')
+    plt.legend(["Plasma wind tunnel","Flight"])
+    plt.gcf().set_size_inches(16, 8)
+    ax.set_xlabel("H0 (MJ/kg)")
+    ax.set_ylabel("P0 (kPa)")
+    ax.set_zlabel("beta (1/s x10^3)")
+    # plt.xlim((0,25))
+    # plt.ylim((0,400))
+    # fig2.colorbar(surf, shrink=0.5, aspect=5)
+    ax.view_init(20,50)
+    plt.title("combined")
+    plt.savefig('test3.png', dpi=300)
     
 
 if __name__ == "__main__":
     print(__doc__)
     #all_in_one_matching(mdot = 0.5, P_arc = 240*10**3, P0=1*10**3, R_jet=0.5, R_model=0.0245)
-    compare_beta(resolution=10)
+    compare_beta(resolution=15)
     ding()
 
