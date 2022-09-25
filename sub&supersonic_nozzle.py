@@ -245,6 +245,8 @@ def nice_wireframe(H_add,P0,beta_square):
     print("done")
 
 def beta_curve_PWK(mdot_range,P_arc,P0_range,R_jet,R_model,resolution):
+    number_of_points =resolution**2
+    number_done = 0
     H_add_linspace = np.linspace(0.5*P_arc/mdot_range[0],0.5*P_arc/mdot_range[1],resolution)
     mdot_linspace = 0.5*P_arc/H_add_linspace
     P0_linspace = np.linspace(P0_range[0],P0_range[1],resolution)
@@ -280,6 +282,8 @@ def beta_curve_PWK(mdot_range,P_arc,P0_range,R_jet,R_model,resolution):
 
             except:
                 beta_square[count1][count2]=0
+            number_done = number_done + 1
+            print(str(100*number_done/number_of_points)+"% through flight calcs")
     
     P0, mdot =np.meshgrid(P0_linspace,mdot_linspace)
     H_add = (0.5*P_arc/mdot)
@@ -306,6 +310,8 @@ def beta_curve_PWK(mdot_range,P_arc,P0_range,R_jet,R_model,resolution):
 
 def beta_curve_flight(H0_linspace,P0_linspace,R_flight_vehicle,resolution):
     beta_square_flight = np.zeros((resolution,resolution)    )
+    number_of_points =resolution**2
+    number_done = 0
     for count1, h0 in enumerate(H0_linspace):
         for count2, P0 in enumerate(P0_linspace-1):
             try:
@@ -351,6 +357,8 @@ def beta_curve_flight(H0_linspace,P0_linspace,R_flight_vehicle,resolution):
                     beta_square_flight[count1][count2] = 0
             except RuntimeWarning:
                 beta_square_flight[count1][count2] = 0
+            number_done = number_done + 1
+            print(str(100*number_done/number_of_points)+"% through flight calcs")
     
     P0, H0 =np.meshgrid(P0_linspace,H0_linspace)
 
@@ -380,7 +388,7 @@ def ding():
     winsound.Beep(frequency, duration)
 
 def compare_beta(resolution):
-    beta_square_PWK, P0_grid_PWK, H0_grid_PWK, mdot_linspace, P0_linspace, H_add_linspace = beta_curve_PWK(mdot_range=[0.005,0.05], P_arc = 240*10**3, P0_range=[600,1000*10**3], R_jet = 0.03, R_model = 0.01, resolution=resolution)
+    beta_square_PWK, P0_grid_PWK, H0_grid_PWK, mdot_linspace, P0_linspace, H_add_linspace = beta_curve_PWK(mdot_range=[0.005,0.05], P_arc = 240*10**3, P0_range=[600,500*10**3], R_jet = 0.03, R_model = 0.0254, resolution=resolution)
     beta_square_flight, P0_grid_flight, H0_grid_flight = beta_curve_flight(H_add_linspace,P0_linspace,1.652,resolution)
     
     fig3 = plt.figure("3",figsize=(10,5))
@@ -397,9 +405,16 @@ def compare_beta(resolution):
     # plt.xlim((0,25))
     # plt.ylim((0,400))
     # fig2.colorbar(surf, shrink=0.5, aspect=5)
-    ax.view_init(20,50)
     plt.title("combined")
+    ax.view_init(20,50)
     plt.savefig('test3.png', dpi=300)
+    ax.view_init(0,0)
+    plt.savefig('test4.png', dpi=300)
+    ax.view_init(0,90)
+    plt.savefig('test5.png', dpi=300)
+    ax.view_init(90,0)
+    plt.savefig('test6.png', dpi=300)
+
     
 
 if __name__ == "__main__":
