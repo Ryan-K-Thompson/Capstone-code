@@ -11,11 +11,13 @@ import numpy as np
 import cantera as ct
 import sympy as sympy
 import scipy as scipy
+# from mpl_toolkits import Axes3D
+from scipy.interpolate import RectBivariateSpline
 from sympy import symbols, Eq, solve
 from scipy import interpolate
 from scipy.optimize import fsolve, root
 from sdtoolbox import postshock, stagnation
-from sdtoolbox.postshock import PostShock_eq
+from sdtoolbox.postshock import PostShock_eq, PostShock_fr
 from sdtoolbox.stagnation import stgsolve
 from matplotlib import pyplot as plt
 from matplotlib import cm
@@ -88,7 +90,9 @@ def Nozzle_selection(data, R_jet):
 
 def stagnation_velocity_gradient(Ue,R_jet,R_model):
     L = R_model/R_jet
-    beta = (Ue/R_model)*(1/(2-L-1.68*(L-1)**2-1.28*(L-1)**3))
+    beta = (Ue/R_model)*(1/(2-L-1.68*(L-1)**2-1.28*(L-1)**3)) 
+
+    
     return beta 
 
 def altitude_from_density_long2019(density):
@@ -283,7 +287,7 @@ def beta_curve_PWK(mdot_range,P_arc,P0_range,R_jet,R_model,resolution):
             except:
                 beta_square[count1][count2]=0
             number_done = number_done + 1
-            print(str(100*number_done/number_of_points)+"% through flight calcs")
+            print(str(100*number_done/number_of_points)+"% through ground calcs")
     
     P0, mdot =np.meshgrid(P0_linspace,mdot_linspace)
     H_add = (0.5*P_arc/mdot)
@@ -395,9 +399,11 @@ def compare_beta(resolution):
 
     ax = plt.axes(projection='3d')
     # ax.plot_wireframe(H_add/(10**6), P0/(10**3), beta_square)
-    surf = ax.plot_wireframe(H0_grid_PWK/(10**6), P0_grid_PWK/(10**3), beta_square_PWK/(10**3), color = "red")
-    surf = ax.plot_wireframe(H0_grid_flight/(10**6), P0_grid_flight/(10**3), beta_square_flight/(10**3), color = 'blue')
-    plt.legend(["Plasma wind tunnel","Flight"])
+    # surf = ax.plot_wireframe(H0_grid_PWK/(10**6), P0_grid_PWK/(10**3), beta_square_PWK/(10**3), color = "red")
+    # surf = ax.plot_wireframe(H0_grid_flight/(10**6), P0_grid_flight/(10**3), beta_square_flight/(10**3), color = 'blue')
+    surf = ax.plot_surface(H0_grid_PWK/(10**6), P0_grid_PWK/(10**3), beta_square_PWK/(10**3), cmap=cm.coolwarm, linewidth=1, antialiased=False, rcount=200, ccount=200)
+    surf = ax.plot_surface(H0_grid_flight/(10**6), P0_grid_flight/(10**3), beta_square_flight/(10**3), cmap=cm.coolwarm, linewidth=1, antialiased=False, rcount=200, ccount=200)
+    # plt.legend(["Plasma wind tunnel","Flight"])
     plt.gcf().set_size_inches(16, 8)
     ax.set_xlabel("H0 (MJ/kg)")
     ax.set_ylabel("P0 (kPa)")
@@ -414,12 +420,77 @@ def compare_beta(resolution):
     plt.savefig('test5.png', dpi=300)
     ax.view_init(90,0)
     plt.savefig('test6.png', dpi=300)
-
     
+    return beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight
+
+def interpolation_of_beta_curve(beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight):
+    for i in range(len(beta_square_PWK)):
+        for j in range(len(beta_square_PWK)-1):
+            
+            # define x and ys
+            x1_PWK = P0_grid_PWK[i][j]; x2_PWK = P0_grid_PWK[i][j+1]; 
+            y1_PWK = beta_square_PWK[i][j]; y2_PWK = beta_square_PWK[i][j+1]; 
+            x1_flight = P0_grid_flight[i][j]; x2_flight = P0_grid_flight[i][j+1]; 
+            y1_flight = beta_square_flight[i][j]; y2_flight = beta_square_flight[i][j+1];  
+            
+            # check if there is intersection at this j
+            if (y1_PWK > y1_flight and y2_PWK < y2_flight) or (y1_PWK < y1_flight and y2_PWK > y2_flight):
+                # then there is intersection
+                # define the interpolation functions for each line
+                y_PWK_interpolate = scipy.interpolate.interp1d([x1_PWK,x2_PWK],[y1_PWK,y2_PWK])
+                y_flight_interpolate = scipy.interpolate.interp1d([x1_flight,x2_flight],[y1_flight,y2_flight])
+                
+                # define intersection function, i.e. where the two lines intersect, the Delta(y) is 0
+                def fun(x):
+                    return y_PWK_interpolate(x)-y_flight_interpolate(x)
+                try:
+                    y_intercept = fsolve(fun, [(x2_PWK-x1_PWK)/2])
+                    print(y_intercept)
+                except:
+                    print("intersection failed")
+                
+        
+def bivariate_interpolation(H0_square,P0_square,beta_square):
+    def Extract(lst):
+        return [item[0] for item in lst]
+    P0_1d = P0_square[0]
+    H0_1d = Extract(H0_square)
+    
+    
+    interp_spline = RectBivariateSpline(H0_1d,P0_1d,beta_square)
+    H0_interp = np.arange(5000000,25000000,100000).tolist()
+    P0_interp = np.arange(0,500000,10000).tolist()
+    
+    print(H0_interp)
+    print(P0_interp)
+    
+    print(type(H0_interp))
+    print(type(interp_spline))
+    X2, Y2 = np.meshgrid(H0_interp,P0_interp)
+    Z2 = interp_spline(P0_interp,H0_interp)
+    
+    
+    
+    # fig, ax = plt.subplots(nrows=1,ncols=1, subplot_kw={'projection' : '3D'})
+    # surf = ax.plot_wireframe(X2,Y2,Z2)
+    # plt.show()
+    
+
 
 if __name__ == "__main__":
     print(__doc__)
     #all_in_one_matching(mdot = 0.5, P_arc = 240*10**3, P0=1*10**3, R_jet=0.5, R_model=0.0245)
-    compare_beta(resolution=15)
+    
+    # uncomment for matching surfaces
+    beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight = compare_beta(resolution=4)
+    
+    
+    
+    
+    #interpolation_of_beta_curve(beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight)
+    
+    # beta_square_PWK, P0_grid_PWK, H0_grid_PWK, mdot_linspace, P0_linspace, H_add_linspace = beta_curve_PWK(mdot_range=[0.005,0.05], P_arc = 240*10**3, P0_range=[600,500*10**3], R_jet = 0.03, R_model = 0.0254, resolution=10)
+    
+    bivariate_interpolation(H0_grid_PWK,P0_grid_PWK,beta_square_PWK)
     ding()
 
