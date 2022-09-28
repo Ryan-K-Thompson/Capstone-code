@@ -227,22 +227,22 @@ def nice_wireframe(H_add,P0,beta_square):
                 if j == 0:
                     if beta_square[i][j] == 0:
                         beta_square[i][j] = beta_square[i][j+1]
-                        H_add[i][j] = H_add[i][j+1]
-                        P0[i][j] = P0[i][j+1]
+                        H_add[i][j] = 0.999*H_add[i][j+1]
+                        P0[i][j] = 0.999*P0[i][j+1]
                 elif j == len(H_add)-1:
                     if beta_square[i][j] == 0:
                         beta_square[i][j] = beta_square[i][j-1]
-                        H_add[i][j] = H_add[i][j-1]
-                        P0[i][j] = P0[i][j-1]
+                        H_add[i][j] = 1.001*H_add[i][j-1]
+                        P0[i][j] = 1.001*P0[i][j-1]
                 else:
                     if beta_square[i][j] == 0:
                         beta_square[i][j] = beta_square[i][j+1]
-                        H_add[i][j] = H_add[i][j+1]
-                        P0[i][j] = P0[i][j+1]
+                        H_add[i][j] = 0.999*H_add[i][j+1]
+                        P0[i][j] = 0.999*P0[i][j+1]
                         if beta_square[i][j] == 0:
                             beta_square[i][j] = beta_square[i][j-1]
-                            H_add[i][j] = H_add[i][j-1]
-                            P0[i][j] = P0[i][j-1]
+                            H_add[i][j] = 1.001*H_add[i][j-1]
+                            P0[i][j] = 1.001*P0[i][j-1]
                             
                 
    
@@ -293,8 +293,17 @@ def beta_curve_PWK(mdot_range,P_arc,P0_range,R_jet,R_model,resolution):
     H_add = (0.5*P_arc/mdot)
     print(P0)
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
     fig1 = plt.figure("1",figsize=(10,5))
-    nice_wireframe(H_add,P0,beta_square)
+    # nice_wireframe(H_add,P0,beta_square)
     ax = plt.axes(projection='3d')
     # ax.plot_wireframe(H_add/(10**6), P0/(10**3), beta_square)
     surf = ax.plot_surface(H_add/(10**6), P0/(10**3), beta_square/(10**3), cmap=cm.coolwarm, linewidth=1, antialiased=False, rcount=200, ccount=200)
@@ -368,7 +377,7 @@ def beta_curve_flight(H0_linspace,P0_linspace,R_flight_vehicle,resolution):
 
     
     fig2 = plt.figure("2",figsize=(10,5))
-    nice_wireframe(H0,P0,beta_square_flight)
+    # nice_wireframe(H0,P0,beta_square_flight)
     ax = plt.axes(projection='3d')
     # ax.plot_wireframe(H_add/(10**6), P0/(10**3), beta_square)
     surf = ax.plot_surface(H0/(10**6), P0/(10**3), beta_square_flight/(10**3), cmap=cm.coolwarm, linewidth=1, antialiased=False, rcount=200, ccount=200)
@@ -411,7 +420,7 @@ def compare_beta(resolution):
     # plt.xlim((0,25))
     # plt.ylim((0,400))
     # fig2.colorbar(surf, shrink=0.5, aspect=5)
-    plt.title("combined")
+    # plt.title("combined")
     ax.view_init(20,50)
     plt.savefig('test3.png', dpi=300)
     ax.view_init(0,0)
@@ -450,16 +459,48 @@ def interpolation_of_beta_curve(beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_
                     print("intersection failed")
                 
         
-def bivariate_interpolation(H0_square,P0_square,beta_square):
+def bivariate_interpolation(H0_square,P0_square,beta_square,name):
+    
+    
+    #restructure data to work properly, i.e. x strictly increasing
+    beta_square_restructured = beta_square*0
+    print(beta_square_restructured)
+    P0_restructured = beta_square*0
+    H0_restructured = beta_square*0
+    for i in range(len(beta_square)):
+        for ii in range(len(beta_square)):
+            H0_restructured[i][ii]=H0_square[len(beta_square)-i-1][ii]
+            P0_restructured[i][ii]=P0_square[len(beta_square)-i-1][ii]
+            beta_square_restructured[i][ii]=beta_square[len(beta_square)-i-1][ii]
+    
+    nice_wireframe(H0_restructured, P0_restructured, beta_square_restructured)
+
+    # remove beta = 0 collumns and rows from all datasets
+    # for i in range(len(beta_square)):
+    
+    # for ii in range(len(beta_square)):
+            
+    
+
+    
+    
+    
+    
+    
+    
     def Extract(lst):
         return [item[0] for item in lst]
-    P0_1d = P0_square[0]
-    H0_1d = Extract(H0_square)
     
+    P0_1d = P0_restructured[0]
+    H0_1d = Extract(H0_restructured)
     
-    interp_spline = RectBivariateSpline(H0_1d,P0_1d,beta_square)
-    H0_interp = np.arange(5000000,25000000,100000).tolist()
-    P0_interp = np.arange(0,500000,10000).tolist()
+    print("H1D = "+str(H0_1d))
+    print("P1D = "+str(P0_1d))
+    print("beta = "+str(beta_square_restructured))
+    interp_spline = RectBivariateSpline(P0_1d,H0_1d,beta_square_restructured)
+    
+    H0_interp = np.arange(H0_1d[0],H0_1d[-1],(H0_1d[-1]-H0_1d[0])/100).tolist()
+    P0_interp = np.arange(P0_1d[0],P0_1d[-1],(P0_1d[-1]-P0_1d[0])/100).tolist()
     
     print(H0_interp)
     print(P0_interp)
@@ -469,11 +510,22 @@ def bivariate_interpolation(H0_square,P0_square,beta_square):
     X2, Y2 = np.meshgrid(H0_interp,P0_interp)
     Z2 = interp_spline(P0_interp,H0_interp)
     
+    ax = plt.axes(projection='3d')
+    
+    surf = ax.plot_surface(X2, Y2, Z2, cmap=cm.coolwarm, linewidth=1, antialiased=False, rcount=200, ccount=200)
+    plt.gcf().set_size_inches(16, 8)
+    ax.set_xlabel("H0 (MJ/kg)")
+    ax.set_ylabel("P0 (kPa)")
+    ax.set_zlabel("beta (1/s x10^3)")
+    plt.title(name)
+    print("X2 "+str(X2))
+    print("Y2 "+str(Y2))
+    print("Z2 "+str(Z2))
     
     
-    # fig, ax = plt.subplots(nrows=1,ncols=1, subplot_kw={'projection' : '3D'})
+    # fig, ax = plt.subplots(nrows=1,ncols=1)
     # surf = ax.plot_wireframe(X2,Y2,Z2)
-    # plt.show()
+    plt.show()
     
 
 
@@ -482,7 +534,7 @@ if __name__ == "__main__":
     #all_in_one_matching(mdot = 0.5, P_arc = 240*10**3, P0=1*10**3, R_jet=0.5, R_model=0.0245)
     
     # uncomment for matching surfaces
-    beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight = compare_beta(resolution=4)
+    beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight = compare_beta(resolution=7)
     
     
     
@@ -491,6 +543,7 @@ if __name__ == "__main__":
     
     # beta_square_PWK, P0_grid_PWK, H0_grid_PWK, mdot_linspace, P0_linspace, H_add_linspace = beta_curve_PWK(mdot_range=[0.005,0.05], P_arc = 240*10**3, P0_range=[600,500*10**3], R_jet = 0.03, R_model = 0.0254, resolution=10)
     
-    bivariate_interpolation(H0_grid_PWK,P0_grid_PWK,beta_square_PWK)
+    bivariate_interpolation(H0_grid_PWK,P0_grid_PWK,beta_square_PWK,"PWK")
+    bivariate_interpolation(H0_grid_flight,P0_grid_flight,beta_square_flight,"flight")
     ding()
 
