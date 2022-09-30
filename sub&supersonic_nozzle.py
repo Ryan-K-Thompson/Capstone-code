@@ -484,7 +484,19 @@ def flight_CFD_inputs_from_intersection(h0,P0,R_flight_vehicle):
     
     return [beta_flight, density_flight, temperature_flight, pressure_flight, altitude_flight, velocity_flight]
 
-# def CFD_inputs_from_line(intercept_coordinates)
+def CFD_inputs_from_line(intercept_coordinates):
+    flight_results =[]
+    pwk_results=[]
+    
+    for i in range(len(intercept_coordinates)):
+        values = intercept_coordinates[i]
+        P0 = values[1]
+        H0 = values[0]
+    
+        flight_results.append( flight_CFD_inputs_from_intersection(H0,P0,R_flight_vehicle=1.652) )
+        pwk_results.append( PWK_CFD_inputs_from_intersection(H0,P0,P_arc=240*10**3,R_jet = 0.03, R_model = 0.0254))
+        # results of form [beta_pwk, density_pwk, temperature_pwk, pressure_pwk, velocity_pwk]
+    return flight_results, pwk_results
 
 def ding(frequency):
     import winsound
@@ -493,7 +505,7 @@ def ding(frequency):
     winsound.Beep(frequency, duration)
 
 def compare_beta(resolution):
-    beta_square_PWK, P0_grid_PWK, H0_grid_PWK, mdot_linspace, P0_linspace, H_add_linspace = beta_curve_PWK(mdot_range=[0.005,0.05], P_arc = 240*10**3, P0_range=[10000,500*10**3], R_jet = 0.03, R_model = 0.0254, resolution=resolution)
+    beta_square_PWK, P0_grid_PWK, H0_grid_PWK, mdot_linspace, P0_linspace, H_add_linspace = beta_curve_PWK(mdot_range=[0.005,0.05], P_arc = 240*10**3, P0_range=[50000,500*10**3], R_jet = 0.03, R_model = 0.0254, resolution=resolution)
     P0_interpolated_grid_PWK, H0_interpolated_grid_PWK, beta_interpolated_grid_PWK = griddata_stack_solution(H0_grid_PWK,P0_grid_PWK,beta_square_PWK,"PWK interpolation")
     
     beta_square_flight, P0_grid_flight, H0_grid_flight = beta_curve_flight(H_add_linspace,P0_linspace,1.652,resolution)
@@ -744,9 +756,52 @@ if __name__ == "__main__":
         intercept_coordinates = surface_intercept(H0_grid_PWK, P0_grid_PWK, beta_square_PWK, H0_grid_flight, P0_grid_flight, beta_square_flight)
         
         
+        flight_results, pwk_results = CFD_inputs_from_line(intercept_coordinates)
         
+        intercept_H0 = []
+        intercept_P0 = []
+        intercept_beta = []
+        for i in range(len(intercept_coordinates)):
+            coords = intercept_coordinates[i]
+            flight_result_array = flight_results[i]
+            
+            H0 = coords[0]/(10**6)
+            P0 = coords[1]/(10**3)
+            beta = flight_result_array[0]/(10**3)
+            
+            
+            intercept_H0.append(H0)
+            intercept_P0.append(P0)
+            
+            intercept_beta.append(beta)
         
+        fig6 = plt.figure("6",figsize=(10,5))
+
+        ax = plt.axes(projection='3d')
         
+        surf = ax.plot_surface(H0_grid_flight/(10**6), P0_grid_flight/(10**3), beta_square_flight/(10**3), linewidth=1, antialiased=False, rcount=200, ccount=200, alpha=0.5)
+        surf = ax.plot_surface(H0_grid_PWK/(10**6), P0_grid_PWK/(10**3), beta_square_PWK/(10**3), linewidth=1, antialiased=False, rcount=200, ccount=200, alpha=0.5)
+        ax.plot3D(intercept_H0, intercept_P0, intercept_beta, color='k')
+        ax.set_zlim(0, 5)
+        # ax.legend(["flight", "PWK", "line"])
+        # plt.gcf().set_size_inches(16, 8)
+        ax.set_xlabel("H0 (MJ/kg)")
+        ax.set_ylabel("P0 (kPa)")
+        ax.set_zlabel("beta (1/s x10^3)")
+
+        ax.view_init(20,50)
+        plt.savefig('1.png', dpi=300)
+        ax.view_init(0,0)
+        plt.savefig('2.png', dpi=300)
+        ax.view_init(0,90)
+        plt.savefig('3.png', dpi=300)
+        ax.view_init(90,0)
+        plt.savefig('4.png', dpi=300)
+        
+        fig7 = plt.figure("7")
+        ax = plt.axes(projection='3d')
+        ax.plot3D(intercept_H0, intercept_P0, intercept_beta)
+        plt.show()
         
         # figA = plt.figure("A",figsize=(10,5))
         # beta_square_PWK, P0_grid_PWK, H0_grid_PWK, mdot_linspace, P0_linspace, H_add_linspace = beta_curve_PWK(mdot_range=[0.005,0.05], P_arc = 240*10**3, P0_range=[10000,500*10**3], R_jet = 0.03, R_model = 0.0254, resolution=20)
