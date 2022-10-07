@@ -760,7 +760,7 @@ if __name__ == "__main__":
         #all_in_one_matching(mdot = 0.5, P_arc = 240*10**3, P0=1*10**3, R_jet=0.5, R_model=0.0245)
         
         # uncomment for matching surfaces
-        beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight = compare_beta(resolution=10)
+        beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight = compare_beta(resolution=20)
         
         intercept_coordinates = surface_intercept(H0_grid_PWK, P0_grid_PWK, beta_square_PWK, H0_grid_flight, P0_grid_flight, beta_square_flight)
         

@@ -350,11 +350,12 @@ def PWK_CFD_inputs_from_intersection(H0,P0,P_arc,R_jet,R_model):
             "Velocity = " + str(data_design[6]) + " m/s \n \n"
             "A/A* = " + str(data_design[0]) + " Pa \n""Pressure = " + str(data_design[5]) + " Pa \n"
             "P0/P = " + str(1/data_design[3]) + "  \n"
-            "Outlet radius = " + str(R_jet) + " m \n \n"
+            "Outlet radius = " + str(0.05) + " m \n \n"
             "h0 = " + str(H_add/(10**6)) + " MJ/kg \n"
             "P0 = " + str(P0) + " Pa \n"
             "beta = "+str(beta_pwk) +" 1/s \n" 
             )
+        gas()
         density_pwk = gas.density_mass
         temperature_pwk = data_design[2]
         pressure_pwk = data_design[3]*P0
@@ -363,13 +364,13 @@ def PWK_CFD_inputs_from_intersection(H0,P0,P_arc,R_jet,R_model):
         species = gas.species_names()
         mass_fractions = gas.Y
         print("Species: \n" + str(species))
-        print("mass fractions: \n" + str(mass_fractions))
+        print("mass fractions: \n" + str(species))
     except:
         beta_pwk=np.nan
     
     
     
-    return  [beta_pwk, density_pwk, temperature_pwk, pressure_pwk, velocity_pwk, mdot],gas
+    return  [beta_pwk, density_pwk, temperature_pwk, pressure_pwk, velocity_pwk, mdot]
 
 
 def beta_curve_flight(H0_linspace,P0_linspace,R_flight_vehicle,resolution):
@@ -500,7 +501,7 @@ def CFD_inputs_from_line(intercept_coordinates):
         P0 = values[1]
         H0 = values[0]
     
-        flight_results.append( flight_CFD_inputs_from_intersection(H0,P0,R_flight_vehicle=1.325) )
+        flight_results.append( flight_CFD_inputs_from_intersection(H0,P0,R_flight_vehicle=0.66) )
         pwk_results.append( PWK_CFD_inputs_from_intersection(H0,P0,P_arc=240*10**3,R_jet = 0.03, R_model = 0.0254))
         # results of form [beta_pwk, density_pwk, temperature_pwk, pressure_pwk, velocity_pwk]
     return flight_results, pwk_results
@@ -515,7 +516,7 @@ def compare_beta(resolution):
     beta_square_PWK, P0_grid_PWK, H0_grid_PWK, mdot_linspace, P0_linspace, H_add_linspace = beta_curve_PWK(mdot_range=[0.005,0.05], P_arc = 240*10**3, P0_range=[50000,500*10**3], R_jet = 0.03, R_model = 0.0254, resolution=resolution)
     P0_interpolated_grid_PWK, H0_interpolated_grid_PWK, beta_interpolated_grid_PWK = griddata_stack_solution(H0_grid_PWK,P0_grid_PWK,beta_square_PWK,"PWK interpolation")
     
-    beta_square_flight, P0_grid_flight, H0_grid_flight = beta_curve_flight(H_add_linspace,P0_linspace,1.325,resolution)
+    beta_square_flight, P0_grid_flight, H0_grid_flight = beta_curve_flight(H_add_linspace,P0_linspace,0.66,resolution)
     P0_interpolated_grid_flight, H0_interpolated_grid_flight, beta_interpolated_grid_flight = griddata_stack_solution(H0_grid_flight,P0_grid_flight,beta_square_flight,"Flight interpolation")
     
     
@@ -760,7 +761,7 @@ if __name__ == "__main__":
         #all_in_one_matching(mdot = 0.5, P_arc = 240*10**3, P0=1*10**3, R_jet=0.5, R_model=0.0245)
         
         # uncomment for matching surfaces
-        beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight = compare_beta(resolution=10)
+        beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight = compare_beta(resolution=4)
         
         intercept_coordinates = surface_intercept(H0_grid_PWK, P0_grid_PWK, beta_square_PWK, H0_grid_flight, P0_grid_flight, beta_square_flight)
         
@@ -814,7 +815,7 @@ if __name__ == "__main__":
         
         for i in range(len(flight_results)):
             result = flight_results[i]
-            print(knudsen(result[2], result[3], 1.325))
+            print(knudsen(result[2], result[3], 0.66))
         
         # figA = plt.figure("A",figsize=(10,5))
         # beta_square_PWK, P0_grid_PWK, H0_grid_PWK, mdot_linspace, P0_linspace, H_add_linspace = beta_curve_PWK(mdot_range=[0.005,0.05], P_arc = 240*10**3, P0_range=[10000,500*10**3], R_jet = 0.03, R_model = 0.0254, resolution=20)

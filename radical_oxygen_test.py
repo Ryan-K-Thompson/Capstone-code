@@ -32,7 +32,7 @@ CN_MF = 0*enthalpy_linspace
 
 count = 0
 for enthalpy in enthalpy_linspace:
-    MF = radical_oxygen_mass_fraction_PWKnozzleflow(gas = gas, enthalpy_addition = enthalpy, composition = "CO2:0.5, N2:0.5", P1 = 90*1000) 
+    MF = radical_oxygen_mass_fraction_PWKnozzleflow(gas = gas, enthalpy_addition = enthalpy, composition = "CO2:1", P1 = 100*1000) 
     O2_MF[count] = MF[0]
     O_MF[count] = MF[1]
     N2_MF[count] = MF[2]
@@ -46,23 +46,30 @@ for enthalpy in enthalpy_linspace:
     count = count + 1
 
 plt.figure()
-plt.title("Mixing chamber gas composition" + "\n" + "Initial compostion (CO$_2$:90%, N$_2$:10%)")
-plt.xlabel("Arc chamber enthalpy addition (MJ)")
-plt.ylabel("Species mass fraction")
+# plt.title("Mixing chamber gas composition" + "\n" + "Initial compostion (CO$_2$:90%, N$_2$:10%)")
+plt.xlabel("Arc chamber enthalpy addition (MJ/kg)")
+plt.ylabel("Mass fraction")
 plt.ylim(bottom = 0, top = 1)
 plt.xlim(left = 0, right = 25)
 enthalpy_linspace = enthalpy_linspace/(10**6)
-plt.plot(enthalpy_linspace, O2_MF)
-plt.plot(enthalpy_linspace, O_MF)
-plt.plot(enthalpy_linspace, N2_MF)
-plt.plot(enthalpy_linspace, N_MF)
-plt.plot(enthalpy_linspace, NO_MF)
-plt.plot(enthalpy_linspace, C_MF)
-plt.plot(enthalpy_linspace, C2_MF)
-plt.plot(enthalpy_linspace, CO_MF)
-plt.plot(enthalpy_linspace, CO2_MF)
-plt.plot(enthalpy_linspace, CN_MF)
-plt.legend(["$O_2$","$O$", "$N_2$", "$N$", "$NO$", "$C$", "$C_2$", "$CO$", "$CO_2$", "$CN$"], loc = "upper left")
+plt.plot(enthalpy_linspace, CO2_MF, color='blue')
+plt.plot(enthalpy_linspace, CO_MF, color='r')
+plt.plot(enthalpy_linspace, O2_MF, color ='m')
+plt.plot(enthalpy_linspace, O_MF, color = 'c')
+# plt.plot(enthalpy_linspace, N2_MF)
+# plt.plot(enthalpy_linspace, N_MF)
+# plt.plot(enthalpy_linspace, NO_MF)
+
+plt.plot(enthalpy_linspace, C2_MF, color = 'y')
+plt.plot(enthalpy_linspace, C_MF, color = 'g')
+
+plt.grid()
+# plt.plot(enthalpy_linspace, CN_MF)
+plt.legend(["$O_2$","$O$", "$C$", "$C_2$", "$CO$", "$CO_2$"],bbox_to_anchor=(1,1))
+plt.savefig('mixing chamber composition 100kpa c021.png', dpi=300, bbox_inches='tight')
+
+
+
 
 # enthalpy_linspace = np.linspace(0,25*10**6,250)
 # O2_MF = 0*enthalpy_linspace
