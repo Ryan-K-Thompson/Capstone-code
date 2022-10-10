@@ -256,8 +256,6 @@ def beta_curve_PWK(mdot_range,P_arc,P0_range,R_jet,R_model,resolution):
     mdot_linspace = 0.5*P_arc/H_add_linspace
     P0_linspace = np.linspace(P0_range[0],P0_range[1],resolution)
     beta_square = np.zeros((resolution,resolution)    )
-    temp_square = beta_square
-    velocity_square = beta_square
 
     for count1, mdot in enumerate(mdot_linspace):
         for count2, P0 in enumerate(P0_linspace):
@@ -286,13 +284,9 @@ def beta_curve_PWK(mdot_range,P_arc,P0_range,R_jet,R_model,resolution):
                     "beta = "+str(beta) +" 1/s \n" 
                     )
                 beta_square[count1][count2]=beta
-                temp_square[count1][count2]=data_design[2]
-                velocity_square[count1][count2]=data_design[6]
 
             except:
                 beta_square[count1][count2]=np.nan
-                temp_square[count1][count2]=np.nan
-                velocity_square[count1][count2]=np.nan
             number_done = number_done + 1
             print(str(100*number_done/number_of_points)+"% through ground calcs")
     
@@ -333,7 +327,7 @@ def beta_curve_PWK(mdot_range,P_arc,P0_range,R_jet,R_model,resolution):
     ax.view_init(90,0)
     plt.savefig('test6.png', dpi=300)
 
-    return beta_square, P0, H_add, mdot_linspace, P0_linspace, H_add_linspace, temp_square, velocity_square
+    return beta_square, P0, H_add, mdot_linspace, P0_linspace, H_add_linspace
 
 def PWK_CFD_inputs_from_intersection(H0,P0,P_arc,R_jet,R_model):
     try:
@@ -380,8 +374,6 @@ def PWK_CFD_inputs_from_intersection(H0,P0,P_arc,R_jet,R_model):
 
 def beta_curve_flight(H0_linspace,P0_linspace,R_flight_vehicle,resolution):
     beta_square_flight = np.zeros((resolution,resolution)    )
-    velocity_square = beta_square_flight
-    altitude_square = beta_square_flight
     number_of_points =resolution**2
     number_done = 0
     for count1, h0 in enumerate(H0_linspace):
@@ -423,16 +415,10 @@ def beta_curve_flight(H0_linspace,P0_linspace,R_flight_vehicle,resolution):
                             
                                 # radius_flight = v_flight/(beta/(math.sqrt((8/3)*(density_flight/stagnation_density_flight))))
                                 beta_square_flight[count1][count2] = (v_flight/R_flight_vehicle)*math.sqrt((8/3)*(density_flight/stagnation_density_flight))
-                                velocity_square[count1][count2] = v_flight
-                                altitude_square[count1][count2] = altitude_flight
                             except:
                                 beta_square_flight[count1][count2] = np.nan
-                                velocity_square[count1][count2] = np.nan
-                                altitude_square[count1][count2] = np.nan
                 else:
                     beta_square_flight[count1][count2] = np.nan
-                    velocity_square[count1][count2] = np.nan
-                    altitude_square[count1][count2] = np.nan
             except RuntimeWarning:
                 beta_square_flight[count1][count2] = np.nan
             number_done = number_done + 1
@@ -457,7 +443,7 @@ def beta_curve_flight(H0_linspace,P0_linspace,R_flight_vehicle,resolution):
     plt.title("flight plot (R_flight_vehicle="+str(R_flight_vehicle)+'m')
     plt.savefig('test2.png', dpi=300)
 
-    return beta_square_flight, P0, H0, altitude_square, velocity_square
+    return beta_square_flight, P0, H0
 
 def flight_CFD_inputs_from_intersection(h0,P0,R_flight_vehicle):
     mech = 'airNASA9noions.cti'
@@ -526,10 +512,10 @@ def ding(frequency):
     winsound.Beep(frequency, duration)
 
 def compare_beta(resolution):
-    beta_square_PWK, P0_grid_PWK, H0_grid_PWK, mdot_linspace, P0_linspace, H_add_linspace, temp_square_PWK, velocity_square_PWK = beta_curve_PWK(mdot_range=[0.005,0.05], P_arc = 240*10**3, P0_range=[50000,500*10**3], R_jet = 0.03, R_model = 0.0254, resolution=resolution)
+    beta_square_PWK, P0_grid_PWK, H0_grid_PWK, mdot_linspace, P0_linspace, H_add_linspace = beta_curve_PWK(mdot_range=[0.005,0.05], P_arc = 240*10**3, P0_range=[50000,500*10**3], R_jet = 0.03, R_model = 0.0254, resolution=resolution)
     P0_interpolated_grid_PWK, H0_interpolated_grid_PWK, beta_interpolated_grid_PWK = griddata_stack_solution(H0_grid_PWK,P0_grid_PWK,beta_square_PWK,"PWK interpolation")
     
-    beta_square_flight, P0_grid_flight, H0_grid_flight,  altitude_square_flight, velocity_square_flight = beta_curve_flight(H_add_linspace,P0_linspace,1.325,resolution)
+    beta_square_flight, P0_grid_flight, H0_grid_flight = beta_curve_flight(H_add_linspace,P0_linspace,1.325,resolution)
     P0_interpolated_grid_flight, H0_interpolated_grid_flight, beta_interpolated_grid_flight = griddata_stack_solution(H0_grid_flight,P0_grid_flight,beta_square_flight,"Flight interpolation")
     
     
@@ -559,7 +545,7 @@ def compare_beta(resolution):
     ax.view_init(90,0)
     plt.savefig('test6.png', dpi=300)
     
-    return beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight,  altitude_square_flight, velocity_square_flight, velocity_square_PWK, temp_square_PWK
+    return beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight
 
 def interpolation_of_beta_curve(beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight):
     for i in range(len(beta_square_PWK)):
@@ -774,7 +760,7 @@ if __name__ == "__main__":
         #all_in_one_matching(mdot = 0.5, P_arc = 240*10**3, P0=1*10**3, R_jet=0.5, R_model=0.0245)
         
         # uncomment for matching surfaces
-        beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight, altitude_square_flight, velocity_square_flight, velocity_square_PWK, temp_square_PWK = compare_beta(resolution=20)
+        beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight = compare_beta(resolution=10)
         
         intercept_coordinates = surface_intercept(H0_grid_PWK, P0_grid_PWK, beta_square_PWK, H0_grid_flight, P0_grid_flight, beta_square_flight)
         
