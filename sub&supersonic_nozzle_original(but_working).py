@@ -250,15 +250,21 @@ def nice_wireframe(H_add,P0,beta_square):
     print("done")
 
 def beta_curve_PWK(mdot_range,P_arc,P0_range,R_jet,R_model,resolution):
+    global dat_fight_altitude_square, dat_fight_velocity_square, dat_PWK_temp_square, dat_PWK_velocity_square, dat_expansionratio_square, dat_A_exit_div_A_throat_square
+    
+    
     number_of_points =resolution**2
     number_done = 0
     H_add_linspace = np.linspace(0.5*P_arc/mdot_range[0],0.5*P_arc/mdot_range[1],resolution)
     mdot_linspace = 0.5*P_arc/H_add_linspace
     P0_linspace = np.linspace(P0_range[0],P0_range[1],resolution)
     beta_square = np.zeros((resolution,resolution)    )
-    temp_square = beta_square
-    velocity_square = beta_square
-
+    
+    dat_PWK_temp_square = np.zeros((resolution,resolution)    )
+    dat_PWK_velocity_square = np.zeros((resolution,resolution)    )
+    dat_expansionratio_square = np.zeros((resolution,resolution)    )
+    dat_A_exit_div_A_throat_square = np.zeros((resolution,resolution)    )
+    
     for count1, mdot in enumerate(mdot_linspace):
         for count2, P0 in enumerate(P0_linspace):
             try:
@@ -266,7 +272,8 @@ def beta_curve_PWK(mdot_range,P_arc,P0_range,R_jet,R_model,resolution):
                 gas = plenum_to_nozzle_inlet(H_add, P0)
                 data, amin = isentropic(gas, mdot)
                 print("H_add = " +str(H_add))
-                
+                A_exit = math.pi*(R_jet**2)
+                A_exit_div_A_throat = A_exit/amin
                 data_subsonic = []
 
                 
@@ -286,13 +293,17 @@ def beta_curve_PWK(mdot_range,P_arc,P0_range,R_jet,R_model,resolution):
                     "beta = "+str(beta) +" 1/s \n" 
                     )
                 beta_square[count1][count2]=beta
-                temp_square[count1][count2]=data_design[2]
-                velocity_square[count1][count2]=data_design[6]
+                dat_PWK_temp_square[count1][count2] = data_design[2]
+                dat_PWK_velocity_square[count1][count2] = str(data_design[6])
+                dat_expansionratio_square[count1][count2] = str(data_design[0])
+                dat_A_exit_div_A_throat_square[count1][count2] = A_exit_div_A_throat
 
             except:
                 beta_square[count1][count2]=np.nan
-                temp_square[count1][count2]=np.nan
-                velocity_square[count1][count2]=np.nan
+                dat_PWK_temp_square[count1][count2] = np.nan
+                dat_PWK_velocity_square[count1][count2] = np.nan
+                dat_expansionratio_square[count1][count2] = np.nan
+                dat_A_exit_div_A_throat_square[count1][count2] = np.nan
             number_done = number_done + 1
             print(str(100*number_done/number_of_points)+"% through ground calcs")
     
@@ -333,7 +344,7 @@ def beta_curve_PWK(mdot_range,P_arc,P0_range,R_jet,R_model,resolution):
     ax.view_init(90,0)
     plt.savefig('test6.png', dpi=300)
 
-    return beta_square, P0, H_add, mdot_linspace, P0_linspace, H_add_linspace, temp_square, velocity_square
+    return beta_square, P0, H_add, mdot_linspace, P0_linspace, H_add_linspace
 
 def PWK_CFD_inputs_from_intersection(H0,P0,P_arc,R_jet,R_model):
     try:
@@ -356,11 +367,12 @@ def PWK_CFD_inputs_from_intersection(H0,P0,P_arc,R_jet,R_model):
             "Velocity = " + str(data_design[6]) + " m/s \n \n"
             "A/A* = " + str(data_design[0]) + " Pa \n""Pressure = " + str(data_design[5]) + " Pa \n"
             "P0/P = " + str(1/data_design[3]) + "  \n"
-            "Outlet radius = " + str(R_jet) + " m \n \n"
+            "Outlet radius = " + str(0.05) + " m \n \n"
             "h0 = " + str(H_add/(10**6)) + " MJ/kg \n"
             "P0 = " + str(P0) + " Pa \n"
             "beta = "+str(beta_pwk) +" 1/s \n" 
             )
+        gas()
         density_pwk = gas.density_mass
         temperature_pwk = data_design[2]
         pressure_pwk = data_design[3]*P0
@@ -369,21 +381,27 @@ def PWK_CFD_inputs_from_intersection(H0,P0,P_arc,R_jet,R_model):
         species = gas.species_names()
         mass_fractions = gas.Y
         print("Species: \n" + str(species))
-        print("mass fractions: \n" + str(mass_fractions))
+        print("mass fractions: \n" + str(species))
     except:
         beta_pwk=np.nan
     
     
     
-    return  [beta_pwk, density_pwk, temperature_pwk, pressure_pwk, velocity_pwk, mdot],gas
+    return  [beta_pwk, density_pwk, temperature_pwk, pressure_pwk, velocity_pwk, mdot]
 
 
 def beta_curve_flight(H0_linspace,P0_linspace,R_flight_vehicle,resolution):
+    global dat_fight_altitude_square, dat_fight_velocity_square, dat_PWK_temp_square, dat_PWK_velocity_square 
+    
     beta_square_flight = np.zeros((resolution,resolution)    )
-    velocity_square = beta_square_flight
-    altitude_square = beta_square_flight
     number_of_points =resolution**2
     number_done = 0
+    
+    dat_fight_altitude_square = np.zeros((resolution,resolution)    )
+    dat_fight_velocity_square = np.zeros((resolution,resolution)    )
+    
+    
+    
     for count1, h0 in enumerate(H0_linspace):
         for count2, P0 in enumerate(P0_linspace-1):
             try:
@@ -418,23 +436,25 @@ def beta_curve_flight(H0_linspace,P0_linspace,R_flight_vehicle,resolution):
                             
                             # evaluate stagnation density in flight 
                             try:
-                                output = stgsolve(gas = gas_flight_postshock, gas1 = gas_flight, U1 = v_flight, Delta = 0.2)
+                                output = stgsolve(gas = gas_flight_postshock, gas1 = gas_flight, U1 = v_flight, Delta = 0.5)
                                 stagnation_density_flight = output['rho'][-1] 
                             
                                 # radius_flight = v_flight/(beta/(math.sqrt((8/3)*(density_flight/stagnation_density_flight))))
                                 beta_square_flight[count1][count2] = (v_flight/R_flight_vehicle)*math.sqrt((8/3)*(density_flight/stagnation_density_flight))
-                                velocity_square[count1][count2] = v_flight
-                                altitude_square[count1][count2] = altitude_flight
+                                dat_fight_altitude_square[count1][count2]  = altitude_flight[0]
+                                dat_fight_velocity_square[count1][count2]  = v_flight
                             except:
-                                beta_square_flight[count1][count2] = 1
-                                velocity_square[count1][count2] = np.nan
-                                altitude_square[count1][count2] = np.nan
+                                beta_square_flight[count1][count2] = np.nan
+                                dat_fight_altitude_square[count1][count2]  = np.nan
+                                dat_fight_velocity_square[count1][count2]  = np.nan
                 else:
-                    beta_square_flight[count1][count2] = 2
-                    velocity_square[count1][count2] = np.nan
-                    altitude_square[count1][count2] = np.nan
-            except RuntimeWarning:
-                beta_square_flight[count1][count2] = 3
+                    beta_square_flight[count1][count2] = np.nan
+                    dat_fight_altitude_square[count1][count2]  = np.nan
+                    dat_fight_velocity_square[count1][count2]  = np.nan
+            except:
+                beta_square_flight[count1][count2] = np.nan
+                dat_fight_altitude_square[count1][count2]  = np.nan
+                dat_fight_velocity_square[count1][count2]  = np.nan
             number_done = number_done + 1
             print(str(100*number_done/number_of_points)+"% through flight calcs")
     
@@ -457,7 +477,7 @@ def beta_curve_flight(H0_linspace,P0_linspace,R_flight_vehicle,resolution):
     plt.title("flight plot (R_flight_vehicle="+str(R_flight_vehicle)+'m')
     plt.savefig('test2.png', dpi=300)
 
-    return beta_square_flight, P0, H0, altitude_square, velocity_square
+    return beta_square_flight, P0, H0
 
 def flight_CFD_inputs_from_intersection(h0,P0,R_flight_vehicle):
     mech = 'airNASA9noions.cti'
@@ -526,10 +546,10 @@ def ding(frequency):
     winsound.Beep(frequency, duration)
 
 def compare_beta(resolution):
-    beta_square_PWK, P0_grid_PWK, H0_grid_PWK, mdot_linspace, P0_linspace, H_add_linspace, temp_square_PWK, velocity_square_PWK = beta_curve_PWK(mdot_range=[0.005,0.05], P_arc = 240*10**3, P0_range=[50000,500*10**3], R_jet = 0.03, R_model = 0.0254, resolution=resolution)
+    beta_square_PWK, P0_grid_PWK, H0_grid_PWK, mdot_linspace, P0_linspace, H_add_linspace = beta_curve_PWK(mdot_range=[0.005,0.05], P_arc = 240*10**3, P0_range=[50000,500*10**3], R_jet = 0.03, R_model = 0.0254, resolution=resolution)
     P0_interpolated_grid_PWK, H0_interpolated_grid_PWK, beta_interpolated_grid_PWK = griddata_stack_solution(H0_grid_PWK,P0_grid_PWK,beta_square_PWK,"PWK interpolation")
     
-    beta_square_flight, P0_grid_flight, H0_grid_flight,  altitude_square_flight, velocity_square_flight = beta_curve_flight(H_add_linspace,P0_linspace,1.325,resolution)
+    beta_square_flight, P0_grid_flight, H0_grid_flight = beta_curve_flight(H_add_linspace,P0_linspace,1.325,resolution)
     P0_interpolated_grid_flight, H0_interpolated_grid_flight, beta_interpolated_grid_flight = griddata_stack_solution(H0_grid_flight,P0_grid_flight,beta_square_flight,"Flight interpolation")
     
     
@@ -559,7 +579,7 @@ def compare_beta(resolution):
     ax.view_init(90,0)
     plt.savefig('test6.png', dpi=300)
     
-    return beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight,  altitude_square_flight, velocity_square_flight, velocity_square_PWK, temp_square_PWK
+    return beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight
 
 def interpolation_of_beta_curve(beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight):
     for i in range(len(beta_square_PWK)):
@@ -768,13 +788,94 @@ def knudsen(T,P,R):
     Kn = (3.81*10**(-23))*T/( math.sqrt(2)*((3.3*10**(-10))**2)*P*R )
     return Kn
 
+def plot_more_info(intercept_H0, intercept_P0):
+    global dat_fight_altitude_square, dat_fight_velocity_square, dat_PWK_temp_square, dat_PWK_velocity_square, dat_expansionratio_square, dat_A_exit_div_A_throat_square
+   
+    # intercept_H0 = [x/(10**6) for x  in intercept_H0]
+    # intercept_P0 = [x/(10**3) for x  in intercept_P0]
+
+    
+    for i in range(len(dat_fight_altitude_square)):
+        for ii in range(len(dat_fight_altitude_square)):
+            if dat_fight_altitude_square[i][ii] == 0:
+                dat_fight_altitude_square[i][ii] = np.nan
+            if dat_fight_velocity_square[i][ii] == 0:
+                dat_fight_velocity_square[i][ii] = np.nan
+    dat_fight_altitude_square = [x/(10**3) for x  in dat_fight_altitude_square]
+    
+    fig100 = plt.figure("100",figsize=(8,6))
+    plt.contourf(H0_grid_flight/(10**6), P0_grid_flight/(10**3),dat_fight_altitude_square)
+    plt.xlabel("$\mathregular{H_0}$ (MJ/kg)")
+    plt.ylabel("$\mathregular{P_0}$ (kPa)")
+    plt.colorbar()
+    plt.title("Altitude, Flight (m)")
+    plt.plot(intercept_H0, intercept_P0,'k')
+    plt.savefig('flight_alt.png', dpi=300)
+    plt.show()
+    
+    fig101 = plt.figure("101",figsize=(8,6))
+    plt.contourf(H0_grid_flight/(10**6), P0_grid_flight/(10**3),dat_fight_velocity_square)
+    plt.xlabel("$\mathregular{H_0}$ (MJ/kg)")
+    plt.ylabel("$\mathregular{P_0}$ (kPa)")
+    plt.colorbar()
+    plt.title("velocity, Flight (m/s)")
+    plt.plot(intercept_H0, intercept_P0,'k')
+    plt.savefig('flight_vel.png', dpi=300)
+    plt.show()
+
+
+    fig102 = plt.figure("102",figsize=(8,6))
+    plt.contourf(H0_grid_flight/(10**6), P0_grid_flight/(10**3),dat_PWK_temp_square)
+    plt.xlabel("$\mathregular{H_0}$ (MJ/kg)")
+    plt.ylabel("$\mathregular{P_0}$ (kPa)")
+    plt.colorbar()
+    plt.title("Temperature, Plasma wind tunnel jet ($\mathregular{\degree K}$)")
+    plt.plot(intercept_H0, intercept_P0,'k')
+    plt.savefig('PWT_temp.png', dpi=300)
+    plt.show()
+
+    
+    fig103 = plt.figure("103",figsize=(8,6))
+    plt.contourf(H0_grid_flight/(10**6), P0_grid_flight/(10**3),dat_PWK_velocity_square)
+    plt.xlabel("$\mathregular{H_0}$ (MJ/kg)")
+    plt.ylabel("$\mathregular{P_0}$ (kPa)")
+    plt.colorbar()
+    plt.title("Velocity, Plasma wind tunnel jet (m/s)")
+    plt.plot(intercept_H0, intercept_P0,'k')
+    plt.savefig('PWT_vel.png', dpi=300)
+    plt.show()
+    
+    fig104 = plt.figure("104",figsize=(8,6))
+    plt.contourf(H0_grid_flight/(10**6), P0_grid_flight/(10**3),dat_expansionratio_square)
+    plt.xlabel("$\mathregular{H_0}$ (MJ/kg)")
+    plt.ylabel("$\mathregular{P_0}$ (kPa)")
+    plt.colorbar()
+    plt.title("A/A*, Plasma wind tunnel nozzle")
+    plt.plot(intercept_H0, intercept_P0,'k')
+    plt.savefig('PWT_A.png', dpi=300)
+    plt.show()
+    
+    fig105 = plt.figure("105",figsize=(8,6))
+    plt.contourf(H0_grid_flight/(10**6), P0_grid_flight/(10**3),dat_A_exit_div_A_throat_square)
+    plt.xlabel("$\mathregular{H_0}$ (MJ/kg)")
+    plt.ylabel("$\mathregular{P_0}$ (kPa)")
+    plt.colorbar()
+    plt.title("$\mathregular{A_exit/A_throat}$, Plasma wind tunnel")
+    plt.plot(intercept_H0, intercept_P0,'k')
+    plt.savefig('PWT_A_exit_A_throat.png', dpi=300)
+    plt.show()
+
+
+
 if __name__ == "__main__":
-    # try:
+    global dat_fight_altitude_square, dat_fight_velocity_square, dat_PWK_temp_square, dat_PWK_velocity_square, dat_expansionratio_square, dat_A_exit_div_A_throat_square
+   
+    try:
         print(__doc__)
         #all_in_one_matching(mdot = 0.5, P_arc = 240*10**3, P0=1*10**3, R_jet=0.5, R_model=0.0245)
         
         # uncomment for matching surfaces
-        beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight, altitude_square_flight, velocity_square_flight, velocity_square_PWK, temp_square_PWK = compare_beta(resolution=5)
+        beta_square_PWK, H0_grid_PWK, P0_grid_PWK, beta_square_flight, H0_grid_flight, P0_grid_flight = compare_beta(resolution=20)
         
         intercept_coordinates = surface_intercept(H0_grid_PWK, P0_grid_PWK, beta_square_PWK, H0_grid_flight, P0_grid_flight, beta_square_flight)
         
@@ -823,7 +924,7 @@ if __name__ == "__main__":
         
         fig7 = plt.figure("7")
         ax = plt.axes(projection='3d')
-        # ax.plot3D(intercept_H0, intercept_P0, intercept_beta)
+        ax.plot3D(intercept_H0, intercept_P0, intercept_beta)
         plt.show()
         
         for i in range(len(flight_results)):
@@ -844,8 +945,9 @@ if __name__ == "__main__":
         # bivariate_interpolation(H0_grid_flight,P0_grid_flight,beta_square_flight,"flight")
         # line_intercept_of_two_surfs(H0_grid_PWK, P0_grid_PWK, beta_square_PWK, H0_grid_flight, P0_grid_flight, beta_square_flight)
         
+        plot_more_info(intercept_H0, intercept_P0)
         ding(2000)
         
-    # except:
-    #     ding(200)
+    except:
+        ding(200)
 

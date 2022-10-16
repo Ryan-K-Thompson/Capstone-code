@@ -11,6 +11,7 @@ from pandas import *
 import matplotlib.pyplot as plt
 import math
 import numpy as np
+import scipy
 
 
 def extract_values(File, value):
@@ -85,19 +86,35 @@ O_PWT_symm = [0.0361347124,0.036316976,0.0363866426,0.0363903604,0.0363919437,0.
 
 
 
+qdot_PWK_interp = scipy.interpolate.interp1d(s_div_r_PWT_wall, qdot_PWT_wall)
+
+error = []
+for count, s_on_r in enumerate(s_div_r_flight_wall):
+    qdot_flight = qdot_flight_wall[count]
+    qdot_PWK = qdot_PWK_interp(s_on_r)
+    
+    
+    error_here = 100*(qdot_PWK/qdot_flight-1 )
+    error.append(error_here)
+    
+
+    
+
 
 fig1 = plt.figure("Figure 1")
 plt.plot(x_flight_symm,M_flight_symm, color = 'r')
 plt.plot(x_PWT_symm,M_PWT_symm, color = 'k')
 plt.grid()
 plt.xlabel('X (m)')
-plt.ylabel('Mach')
+plt.ylabel('Mach number')
 #plt.title('Flight heat transfer')
 # plt.xlim(0,1.2)
 plt.legend(["Flight","PWT"])
-plt.savefig('plt_comparison_mach.png', dpi=300)
 plt.yscale('log')
 plt.xlim([-0.05,0])
+plt.ylim([10**(-4),20])
+plt.savefig('plt_comparison_mach.png', dpi=300, bbox_inches="tight")
+
 plt.show()
 
 
@@ -111,7 +128,7 @@ plt.ylabel('Pressure (Pa)')
 # plt.xlim(0,1.2)
 plt.legend(["Flight","PWT"])
 plt.xlim([-0.05,0])
-plt.savefig('plt_comparison_pressure.png', dpi=300)
+plt.savefig('plt_comparison_pressure.png', dpi=300, bbox_inches="tight")
 
 plt.show()
 
@@ -125,7 +142,7 @@ plt.ylabel('Temperature ($\mathregular{\degree}$K)')
 # plt.xlim(0,1.2)
 plt.legend(["Flight","PWT"])
 plt.xlim([-0.05,0])
-plt.savefig('plt_comparison_temperature.png', dpi=300)
+plt.savefig('plt_comparison_temperature.png', dpi=300, bbox_inches="tight")
 plt.show()
 
 
@@ -138,9 +155,9 @@ plt.ylabel('beta (1/s)')
 #plt.title('Flight heat transfer')
 # plt.xlim(0,1.2)
 plt.legend(["Flight","PWT"])
-plt.xlim([-0.05,0])
+plt.xlim([-0.01,0])
 plt.ylim(0,100)
-plt.savefig('plt_comparison_beta.png', dpi=300)
+plt.savefig('plt_comparison_beta.png', dpi=300, bbox_inches="tight")
 plt.show()
 
 
@@ -167,8 +184,9 @@ plt.ylabel('Mass fraction')
 # plt.xlim(0,1.2)
 
 plt.xlim([-0.05,0])
-plt.ylim(0,1)
-plt.savefig('plt_comparison_beta.png', dpi=300)
+plt.yscale('log')
+plt.ylim(10**(-16),1)
+plt.savefig('plt_comparison_chemistry.png', dpi=300, bbox_inches="tight")
 plt.show()
 
 
@@ -176,16 +194,58 @@ fig6 = plt.figure("Figure 6")
 plt.plot(s_div_r_flight_wall,qdot_flight_wall, color = 'r')
 plt.plot(s_div_r_PWT_wall,qdot_PWT_wall, color = 'k')
 plt.grid()
-plt.xlabel('(S/R)')
+plt.xlabel('S/R')
 plt.ylabel('Heat transfer ($\mathregular{W/cm^{2}}$)')
 #plt.title('Flight heat transfer')
 # plt.xlim(0,1.2)
 plt.legend(["Flight","PWT"])
 plt.xlim([0,1.2])
 plt.ylim(0,100)
-plt.savefig('plt_comparison_qdot.png', dpi=300)
+plt.savefig('plt_comparison_qdot.png', dpi=300, bbox_inches="tight")
 plt.show()
 
 
-# 
 
+fig7 = plt.figure("Figure 7")
+plt.plot(x_flight_symm,CO2_flight_symm, 'b-')
+plt.plot(x_flight_symm,CO_flight_symm, 'r-')
+plt.plot(x_flight_symm,O2_flight_symm, 'm-')
+plt.plot(x_flight_symm,O_flight_symm, 'c-')
+plt.plot(x_flight_symm,C2_flight_symm, 'g-')
+plt.plot(x_flight_symm,C_flight_symm, 'y-')
+
+plt.plot(x_PWT_symm,CO2_PWT_symm, 'b--')
+plt.plot(x_PWT_symm,CO_PWT_symm, 'r--')
+plt.plot(x_PWT_symm,O2_PWT_symm,  'm--')
+plt.plot(x_PWT_symm,O_PWT_symm,  'c--')
+plt.plot(x_PWT_symm,C2_PWT_symm,  'g--')
+plt.plot(x_PWT_symm,C_PWT_symm,  'y--')
+
+plt.legend(['$\mathregular{CO_2}$','$\mathregular{CO}$','$\mathregular{O2}$','$\mathregular{O}$','$\mathregular{C_2}$','$\mathregular{C}$'],bbox_to_anchor=(1,1))
+plt.grid()
+plt.xlabel('X (m)')
+plt.ylabel('Mass fraction')
+#plt.title('Flight heat transfer')
+# plt.xlim(0,1.2)
+
+plt.xlim([-0.01,0])
+plt.ylim([0,0.6])
+# plt.yscale('log')
+# plt.ylim(10**(-16),1)
+plt.savefig('plt_comparison_chemistry_forposter.png', dpi=300, bbox_inches="tight")
+plt.show()
+
+
+
+fig8 = plt.figure("Figure 8")
+plt.plot(s_div_r_flight_wall,error, "r")
+plt.grid()
+plt.xlabel('S/R')
+plt.ylabel('Replication error (%)')
+#plt.title('Flight heat transfer')
+# plt.xlim(0,1.2)
+# plt.legend(["Flight","PWT"])
+plt.xlim([0,1.2])
+# plt.ylim(0,100)
+plt.savefig('plt_comparison_qdot_error.png', dpi=300, bbox_inches="tight")
+plt.show()
